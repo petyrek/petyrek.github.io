@@ -105,6 +105,7 @@ header h2{
 	  	transition-property: left;
 		transition-duration: 1s;
 		transition-delay: 0s;
+		box-sizing: border-box;
 	}
 	#content section:first-child{
 		left: 0;

@@ -81,7 +81,8 @@ function setContentSectionsWidth(){
 	// sets the width of content sections to the value of their wrapper
 	var sections = $(".content_section");
 	var parentWidth = $(sections[0]).parent().width();
+	console.log("parentWidth:", parentWidth);
 	for(var i = 0; i < sections.length; i++){
-		$(sections[i]).width(parentWidth);
+		$(sections[i]).outerWidth(parentWidth);
 	}
 }
