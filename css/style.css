@@ -97,6 +97,27 @@ header h2{
 		color: #ccc;
 		padding-left: 1em;
 	}
+	#content ul{
+		list-style: none;
+	}
+	#content ul li img{
+		float: left;
+		height: 60px;
+		width: 100px;
+		margin-right: 10px;
+		margin-top: 5px;
+	}
+	#content ul li a{
+		text-decoration: none;
+		color: #fff;
+	}
+	#content ul li a:hover{
+		text-decoration: underline;
+	}
+	#content ul li a h3{
+		font-weight: normal;
+		margin-bottom: 10px;
+	}
 	#content section{
 		position: absolute;
 		top: 0;
