@@ -18,8 +18,18 @@ NumberField.prototype.numberPressed = function(i, questions)
     if(i == 10){
         this.text = this.text.substring(0, this.text.length - 1);
     }
+    else if (this.text === "0"){
+        if(i < 9){
+            this.text = (i + 1) + "";
+        }
+    }
     else if( this.text.length < 10 ){
-        this.text += i;
+        if( i == 9){
+            this.text += 0;
+        }
+        else{
+            this.text += (i + 1);
+        }
     }
     this.checkAnswer(questions);
 }

@@ -40,8 +40,12 @@ function generateNumButtons(ctx)
         tmp.height = ctx.canvas.height / 11;
         tmp.x = i * ctx.canvas.width / 11;
         tmp.y = ctx.canvas.height - tmp.height;
-        tmp.text = i + "";
-        tmp.value = i;
+        tmp.text = i + 1 + "";
+        tmp.value = i + 1;
+        if( i == 9){ // zero comes after nine, it's better that way
+            tmp.text = "0";
+            tmp.value = 0;
+        }
         if( i == 10){
             tmp.text = "del";
         }

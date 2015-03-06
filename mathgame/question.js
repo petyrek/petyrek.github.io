@@ -45,7 +45,7 @@ function generateQuestionText(q)
         var first = getRandomInt(0,50);
         var second = getRandomInt(0,50);
         if( first < second){
-            swap(first, second);
+            second = [first, first = second][0];
         }
 
         q.text = first + "-" + second;
