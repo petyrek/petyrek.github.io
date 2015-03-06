@@ -15,7 +15,7 @@ function Game() {
 
     var that = this;
     setInterval(function(){
-        //that.generateQuestion(that.questions)
+        that.generateQuestion(that.questions)
     }, 3000);
 }
 
