@@ -10,8 +10,11 @@ function Game() {
     this.context.strokeStyle = "#0f0";
     this.context.lineWidth = 5;
 
+    this.lifes = new Lifes(3);
+    this.score = new Score();
+
+    // create the number buttons
     this.numButtons = generateNumButtons(this.context);
-    console.log("btns:", this.numButtons);
 
     // create number field
     this.numberField = new NumberField(this.context);
@@ -20,16 +23,16 @@ function Game() {
     this.questions = [];
     generateQuestion(this.context, this.questions);
 
-    // set question generation
+    // set question generation and check if it is answered
     var that = this;
     setInterval(function(){
         generateQuestion(that.context, that.questions);
-        that.numberField.checkAnswer(that.questions);
+        that.numberField.checkAnswer(that.questions, that.score);
     }, 3000);
 
     // handle the mouseclick event
     canvas.onmousedown = function(e){
-        onMouseDown(e, that.numButtons, that.questions, that.numberField);
+        onMouseDown(e, that.numButtons, that.questions, that.numberField, that.score);
     }
     canvas.onmouseup = function(e){
         onMouseUp(that.numButtons);
@@ -41,6 +44,8 @@ Game.prototype.draw = function()
     var ctx = this.context;
     ctx.clearRect(0, 0, this.width, this.height);
     
+    this.lifes.draw(ctx);
+    this.score.draw(ctx);
     this.numberField.draw(ctx);
 
     // draw ui buttons
@@ -60,6 +65,7 @@ Game.prototype.update = function()
     this.questions.forEach(function(q, index, object){
         if(q.y - q.height / 2 > that.height){
             object.splice(index, 1); // remove the item from the collection
+            that.lifes.lifes -= 1;
         }
         q.update(that.context);
     });

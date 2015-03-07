@@ -13,7 +13,7 @@ NumberField.prototype.draw = function(ctx)
     ctx.fillText(this.text, this.x + this.width / 2.0 - ctx.measureText(this.text).width / 2.0 , this.y + this.height / 2.0 + 5);
 }
 
-NumberField.prototype.numberPressed = function(i, questions)
+NumberField.prototype.numberPressed = function(i, questions, score)
 { 
     if(i == 10){
         this.text = this.text.substring(0, this.text.length - 1);
@@ -31,10 +31,10 @@ NumberField.prototype.numberPressed = function(i, questions)
             this.text += (i + 1);
         }
     }
-    this.checkAnswer(questions);
+    this.checkAnswer(questions, score);
 }
 
-NumberField.prototype.checkAnswer = function(questions)
+NumberField.prototype.checkAnswer = function(questions, score)
 {
     var value = parseInt(this.text);
     var that = this;
@@ -42,6 +42,7 @@ NumberField.prototype.checkAnswer = function(questions)
         if(value == q.value){ // if the numField matches an answer to the question
             object.splice(index, 1); // remove the item from the collection
             that.text = "";
+            score.score += 30;
             return;
         }
     });

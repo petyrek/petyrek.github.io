@@ -35,15 +35,15 @@ function generateQuestionText(q)
     var operation = getRandomInt(0, 4);
     
     if( operation == 0){ // plus
-        var first = getRandomInt(0,50);
-        var second = getRandomInt(0,50);
+        var first = getRandomInt(1,50);
+        var second = getRandomInt(1,50);
 
         q.text = first + "+" + second;
         q.value = first + second;
     }
     else if( operation == 1){ // minus
-        var first = getRandomInt(0,50);
-        var second = getRandomInt(0,50);
+        var first = getRandomInt(1,50);
+        var second = getRandomInt(1,50);
         if( first < second){
             second = [first, first = second][0];
         }
@@ -52,15 +52,15 @@ function generateQuestionText(q)
         q.value = first - second;
     }
     else if( operation == 2){ // multiply
-        var first = getRandomInt(0,10);
-        var second = getRandomInt(0,10);
+        var first = getRandomInt(1,10);
+        var second = getRandomInt(1,10);
 
         q.text = first + "*" + second;
         q.value = first * second;
     }
     else if( operation == 3){ // divide
-        var first = getRandomInt(0,10);
-        var second = getRandomInt(0,10);
+        var first = getRandomInt(1,10);
+        var second = getRandomInt(1,10);
 
         q.text = (first * second) + "/" + second;
         q.value = first;
