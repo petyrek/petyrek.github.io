@@ -7,6 +7,15 @@ function onMouseDown(e, buttons, questions, numberField, score){
     }
 }
 
+function onKeyPress(e, questions, numberField, score){
+    if(e.keyCode > 93 && e.keyCode < 106){ // numbers 0 - 9
+        numberField.numberPressed( e.keyCode - 97, questions, score);
+    }
+    if(e.keyCode == 8){ // backspace
+        numberField.numberPressed( 10, questions, score);
+    }
+}
+
 function onMouseUp(buttons){
     // de-activate all the buttons
     buttons.forEach(function(b){

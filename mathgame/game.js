@@ -37,6 +37,9 @@ function Game() {
     canvas.onmouseup = function(e){
         onMouseUp(that.numButtons);
     }
+    document.onkeydown = function(e){
+        onKeyPress(e, that.questions, that.numberField, that.score);
+    }
 }
 
 Game.prototype.draw = function()
