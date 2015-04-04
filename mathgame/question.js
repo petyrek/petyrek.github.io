@@ -25,7 +25,7 @@ function generateQuestion(ctx, questions)
     var tmp = new Question();
     tmp.x = Math.random() * (ctx.canvas.width - tmp.width) + tmp.width / 2;
     tmp.y = 0 - tmp.height;
-    tmp.velocity = 5;
+    tmp.velocity = 2;
     generateQuestionText(tmp);
     questions.push(tmp);
     console.log("questions", questions);
