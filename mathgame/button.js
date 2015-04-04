@@ -21,10 +21,17 @@ function Button(x, y, width, height, text, onclick)
     }, false);
 
     window.addEventListener("keydown", function(event){
+    	if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8'){
+            event.preventDefault();
+	    }
     	that.onKeyDown(event);
+
     }, false);
 
-        window.addEventListener("keyup", function(event){
+    window.addEventListener("keyup", function(event){
+       	if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8'){
+            event.preventDefault();
+	    } 	
     	that.onKeyUp(event);
     }, false);
 }
@@ -52,7 +59,7 @@ Button.prototype.onKeyDown = function(event)
 {
 	if(event.keyCode === this.keyCode){
 		this.active = true;
-		stopBackspaceKey();
+		
 	}
 }
 Button.prototype.onKeyUp = function(event) 
@@ -60,7 +67,7 @@ Button.prototype.onKeyUp = function(event)
 	if(event.keyCode === this.keyCode){
 		this.active = false;
 		this.onclick();
-		stopBackspaceKey();
+
 	}
 }
 Button.prototype.contains = function(x, y)
