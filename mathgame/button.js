@@ -52,6 +52,7 @@ Button.prototype.onKeyDown = function(event)
 {
 	if(event.keyCode === this.keyCode){
 		this.active = true;
+		stopBackspaceKey();
 	}
 }
 Button.prototype.onKeyUp = function(event) 
@@ -59,6 +60,7 @@ Button.prototype.onKeyUp = function(event)
 	if(event.keyCode === this.keyCode){
 		this.active = false;
 		this.onclick();
+		stopBackspaceKey();
 	}
 }
 Button.prototype.contains = function(x, y)
