@@ -15,26 +15,37 @@ NumberField.prototype.draw = function(ctx)
 
 NumberField.prototype.numberPressed = function(i, questions, score)
 { 
-    if(i == 10){
-        this.text = this.text.substring(0, this.text.length - 1);
+    if(i == 11){ // delete character has been pressed
+        this.text = this.text.substring(0, this.text.length - 1); 
     }
-    else if (this.text === "0"){
-        if(i < 9){
-            this.text = (i + 1) + "";
+    else if (this.text === "0"){ // 0 is in the number field and number is pressed
+        if(i < 10){
+            this.text = i + "";
         }
     }
     else if( this.text.length < 10 ){
-        if( i == 9){
-            this.text += 0;
+        if( i == 10){
+            this.text += 0; // zero is pressed
         }
         else{
-            this.text += (i + 1);
+            this.text += i; // number is pressed
         }
     }
-    this.checkAnswer(questions, score);
+    this.checkAnswers(questions, score);
 }
 
-NumberField.prototype.checkAnswer = function(questions, score)
+NumberField.prototype.checkAnswer = function(q)
+{
+    var value = parseInt(this.text);
+    var that = this;
+    if(value == q.value){ // if the numField matches an answer to the question
+        this.text = "";  
+        return true;
+    }
+    return false;
+}
+
+NumberField.prototype.checkAnswers = function(questions, score)
 {
     var value = parseInt(this.text);
     var that = this;
@@ -42,7 +53,7 @@ NumberField.prototype.checkAnswer = function(questions, score)
         if(value == q.value){ // if the numField matches an answer to the question
             object.splice(index, 1); // remove the item from the collection
             that.text = "";
-            score.score += 30;
+            score.increaseScore();
             return;
         }
     });

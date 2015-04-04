@@ -4,8 +4,8 @@ function Question() {
     this.velocity = 0;
     this.width = 100;
     this.height = 40;
-    this.text = "5+4";
-    this.value = 9;
+    this.text = "";
+    this.value = 0;
 }
  
 Question.prototype.update = function()
@@ -21,13 +21,18 @@ Question.prototype.draw = function(ctx)
 
 function generateQuestion(ctx, questions)
 {
+    var that = this;
     var tmp = new Question();
     tmp.x = Math.random() * (ctx.canvas.width - tmp.width) + tmp.width / 2;
     tmp.y = 0 - tmp.height;
-    tmp.velocity = 1;
+    tmp.velocity = 5;
     generateQuestionText(tmp);
     questions.push(tmp);
     console.log("questions", questions);
+
+    setTimeout(function(){
+        generateQuestion(ctx, questions);
+    }, 3000);
 }
 
 function generateQuestionText(q)

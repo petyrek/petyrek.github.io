@@ -7,5 +7,5 @@ function Lifes(lifes)
  
 Lifes.prototype.draw = function(ctx)
 {
-    ctx.fillText("Lifes: " + this.lifes, ctx.canvas.width - ctx.measureText("Lifes:  3").width, ctx.canvas.height / 50);
+    ctx.fillText("Lifes: " + this.lifes, ctx.canvas.width - ctx.measureText("Lifes: 3 ").width, ctx.canvas.height / 50);
 }

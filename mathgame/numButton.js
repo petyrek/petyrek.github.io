@@ -30,28 +30,3 @@ NumButton.prototype.deactivate = function()
     this.active = false;
     // TODO : un-highlight it
 }
-
-function generateNumButtons(ctx)
-{
-    var btns = [];
-    for(var i = 0; i < 11; i++){
-        var tmp = new NumButton();
-        tmp.width = ctx.canvas.width / 11;
-        tmp.height = ctx.canvas.height / 11;
-        tmp.x = i * ctx.canvas.width / 11;
-        tmp.y = ctx.canvas.height - tmp.height;
-        tmp.text = i + 1 + "";
-        tmp.value = i + 1;
-        if( i == 9){ // zero comes after nine, it's better that way
-            tmp.text = "0";
-            tmp.value = 0;
-        }
-        if( i == 10){
-            tmp.text = "del";
-        }
-
-        btns.push(tmp);
-    }
-
-    return btns;
-}
