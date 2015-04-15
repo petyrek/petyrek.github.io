@@ -15,24 +15,24 @@ function GameState(game) {
     // generate first question
     this.questions = [];
     generateQuestion(this.context, this.questions);
-
 };
 
 GameState.prototype.draw = function()
 {  
     var that = this;
+    // draw questions
+    this.questions.forEach(function(q){
+        q.draw(that.context);
+    });
+
     this.lifes.draw(this.context);
     this.score.draw(this.context);
+    
     this.numberField.draw(this.context);
 
     // draw ui buttons
     this.numButtons.forEach(function(b){
         b.draw(that.context);
-    });
-
-    // draw questions
-    this.questions.forEach(function(q){
-        q.draw(that.context);
     });
 };
  
@@ -40,7 +40,7 @@ GameState.prototype.update = function()
 {
     var that = this;
     this.questions.forEach(function(q, index, object){
-        if(q.y - q.height / 2 > that.game.height ){ // question has fallen below the screen
+        if(q.y > that.game.height  * 10 / 11){ // question has fallen below the screen
             object.splice(index, 1); // remove the item from the collection
             that.lifes.lifes -= 1;
             if(that.lifes.lifes < 1){
@@ -67,6 +67,7 @@ GameState.prototype.generateNumButtons = function()
         tmp.y = this.context.canvas.height - tmp.height;
         tmp.text = i + "";
         tmp.value = i;
+        tmp.outlineColor = "#f00"
         tmp.onclick = function(){
             that.numberField.numberPressed( this.value, that.questions, that.score);
         }

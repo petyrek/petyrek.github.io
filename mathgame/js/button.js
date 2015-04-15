@@ -11,6 +11,9 @@ function Button(x, y, width, height, text, onclick)
     this.value = 0;
     this.onclick = onclick;
     this.keyCode;
+    this.outlineColor = "#fff";
+    this.fontColor = "#fff";
+    this.fillColor = "#171717"
 
     window.addEventListener("mousedown", function(event){
     	that.onMouseDown(event);
@@ -78,7 +81,12 @@ Button.prototype.contains = function(x, y)
 Button.prototype.draw = function(ctx)
 {
 	var t = this.text;
-	if(this.active){ t = this.text + "!"}
+    var off = ctx.lineWidth;
+    ctx.strokeStyle = this.outlineColor;
     ctx.strokeRect(this.x, this.y, this.width, this.height);
-    ctx.fillText(t, this.x + this.width / 2.0 - ctx.measureText(this.text).width / 2.0 , this.y + this.height / 2.0 + 5);
+    
+    ctx.fillStyle = (this.active)?  this.fontColor : this.fillColor;
+    ctx.fillRect(this.x + off / 2, this.y + off / 2, this.width - off, this.height - off);
+    ctx.fillStyle = (this.active)?  this.fillColor : this.fontColor;
+    ctx.fillText(t, this.x + this.width / 2.0 - ctx.measureText(this.text).width / 2.0 , this.y + this.height / 2.0);
 }

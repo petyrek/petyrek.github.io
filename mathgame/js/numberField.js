@@ -9,8 +9,11 @@ function NumberField(ctx)
  
 NumberField.prototype.draw = function(ctx)
 {
+    var off = ctx.lineWidth;
     ctx.strokeRect(this.x, this.y, this.width, this.height);
-    ctx.fillText(this.text, this.x + this.width / 2.0 - ctx.measureText(this.text).width / 2.0 , this.y + this.height / 2.0 + 5);
+    ctx.fillStyle = "#171717";
+    ctx.fillRect(this.x + off / 2, this.y + off / 2, this.width - off, this.height - off);
+    ctx.fillText(this.text, this.x + this.width / 2.0 - ctx.measureText(this.text).width / 2.0 , this.y + this.height / 2.0);
 }
 
 NumberField.prototype.numberPressed = function(i, questions, score)

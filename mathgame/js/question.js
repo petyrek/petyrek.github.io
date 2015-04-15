@@ -2,8 +2,8 @@ function Question() {
     this.x = 0;
     this.y = 0;
     this.velocity = 0;
-    this.width = 100;
-    this.height = 40;
+    this.width = 0;
+    this.height = 0;
     this.text = "";
     this.value = 0;
 }
@@ -16,19 +16,20 @@ Question.prototype.update = function()
 Question.prototype.draw = function(ctx)
 {
     drawEllipseByCenter(ctx, this.x, this.y, this.width, this.height);
-    ctx.fillText(this.text, this.x - ctx.measureText(this.text).width / 2.0 , this.y + 5);
+    ctx.fillText(this.text, this.x - ctx.measureText(this.text).width / 2.0 , this.y);
 };
 
 function generateQuestion(ctx, questions)
 {
     var that = this;
     var tmp = new Question();
+    tmp.width = ctx.canvas.width / 6;
+    tmp.height = ctx.canvas.width / 12;
     tmp.x = Math.random() * (ctx.canvas.width - tmp.width) + tmp.width / 2;
     tmp.y = 0 - tmp.height;
-    tmp.velocity = 2;
+    tmp.velocity = ctx.canvas.height / 300;
     generateQuestionText(tmp);
     questions.push(tmp);
-    console.log("questions", questions);
 
     setTimeout(function(){
         generateQuestion(ctx, questions);

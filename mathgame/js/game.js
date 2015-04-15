@@ -2,13 +2,16 @@ function Game() {
     
     // setup canvas
     var canvas = document.getElementById("game");
+    var size = (window.innerHeight < window.innerWidth)? window.innerHeight : window.innerWidth;
+    size *= 0.95;
+    canvas.width = size;
+    canvas.height = size;
     this.width = canvas.width;
     this.height = canvas.height;
+    
     this.context = canvas.getContext("2d");
-    this.context.fillStyle = "#f00";
-    this.context.font = "20px Calibri";
-    this.context.strokeStyle = "#0f0";
-    this.context.lineWidth = 5;
+    this.context.lineWidth = this.height / 400;
+    this.context.textBaseline = "middle";
 
     this.state = new MenuState(this)
 };

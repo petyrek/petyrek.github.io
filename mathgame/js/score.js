@@ -11,5 +11,6 @@ Score.prototype.increaseScore = function(){
 
 Score.prototype.draw = function(ctx)
 {
+    ctx.font = ctx.canvas.height / 30 + "px calibri";
     ctx.fillText("Score: " + this.points, ctx.canvas.width / 100, ctx.canvas.height / 50);
 }
