@@ -1,7 +1,8 @@
 function EndState(game, points) {
     var that = this;
     this.game = game;
-    this.text = "You faking lost m8";
+
+    this.text = (points >= 300)? "Gr8 score m8, I r8 8/8" : "You faking lost m8, no h8";
     this.scoreText = "Your score: " + points;
     this.context = game.context;
     

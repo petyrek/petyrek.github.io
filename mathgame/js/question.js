@@ -16,6 +16,7 @@ Question.prototype.update = function()
 Question.prototype.draw = function(ctx)
 {
     drawEllipseByCenter(ctx, this.x, this.y, this.width, this.height);
+    ctx.fillStyle = "#fff";
     ctx.fillText(this.text, this.x - ctx.measureText(this.text).width / 2.0 , this.y);
 };
 

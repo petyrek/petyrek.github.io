@@ -13,6 +13,7 @@ NumberField.prototype.draw = function(ctx)
     ctx.strokeRect(this.x, this.y, this.width, this.height);
     ctx.fillStyle = "#171717";
     ctx.fillRect(this.x + off / 2, this.y + off / 2, this.width - off, this.height - off);
+    ctx.fillStyle = "#fff";
     ctx.fillText(this.text, this.x + this.width / 2.0 - ctx.measureText(this.text).width / 2.0 , this.y + this.height / 2.0);
 }
 

@@ -67,19 +67,23 @@ GameState.prototype.generateNumButtons = function()
         tmp.y = this.context.canvas.height - tmp.height;
         tmp.text = i + "";
         tmp.value = i;
-        tmp.outlineColor = "#f00"
+        tmp.outlineColor = "#f00";
         tmp.onclick = function(){
+            console.log('click');
             that.numberField.numberPressed( this.value, that.questions, that.score);
         }
         tmp.keyCode = i + 96;
+        tmp.altKeyCode = i + 48;
         if( i == 10){ // zero comes after nine, it's better that way
             tmp.text = "0";
             tmp.value = 0;
             tmp.keyCode = 96;
+            tmp.altKeyCode = 48;
         }
         if( i == 11){
             tmp.text = "del";
             tmp.keyCode = 8;
+            tmp.altKeyCode = null;
         }
 
         btns.push(tmp);

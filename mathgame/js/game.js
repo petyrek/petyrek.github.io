@@ -13,7 +13,7 @@ function Game() {
     this.context.lineWidth = this.height / 400;
     this.context.textBaseline = "middle";
 
-    this.state = new MenuState(this)
+    this.state = new MenuState(this);
 };
 
 Game.prototype.draw = function()

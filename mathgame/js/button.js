@@ -11,9 +11,10 @@ function Button(x, y, width, height, text, onclick)
     this.value = 0;
     this.onclick = onclick;
     this.keyCode;
+    this.altKeyCode;
     this.outlineColor = "#fff";
     this.fontColor = "#fff";
-    this.fillColor = "#171717"
+    this.fillColor = "#171717";
 
     window.addEventListener("mousedown", function(event){
     	that.onMouseDown(event);
@@ -32,10 +33,11 @@ function Button(x, y, width, height, text, onclick)
     }, false);
 
     window.addEventListener("keyup", function(event){
-       	if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8'){
+       	that.onKeyUp(event);
+        if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8'){
             event.preventDefault();
 	    } 	
-    	that.onKeyUp(event);
+    	
     }, false);
 }
  
@@ -60,17 +62,16 @@ Button.prototype.onMouseUp = function(event)
 }
 Button.prototype.onKeyDown = function(event) 
 {
-	if(event.keyCode === this.keyCode){
+	if(event.keyCode === this.keyCode || event.keyCode === this.altKeyCode){
 		this.active = true;
 		
 	}
 }
 Button.prototype.onKeyUp = function(event) 
 {
-	if(event.keyCode === this.keyCode){
+	if(event.keyCode === this.keyCode || event.keyCode === this.altKeyCode){
 		this.active = false;
 		this.onclick();
-
 	}
 }
 Button.prototype.contains = function(x, y)
