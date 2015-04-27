@@ -1,24 +1,31 @@
 // EcmaScript 5
 // 1) strict mode
+
 //Variables must be declared in strict mode
 function sloppyFunc(){
 	sloppyVar = 5;
-}// creates a global variable 'sloppyVar'
+}
+sloppyFunc();
 
 function strictFunc(){
 	'use strict';
 	strictVar = 5;
-}// ReferenceError: strictVar is not defined
+}
+strictFunc();
 
 
 // this is undefined in nonmethod functions
-function sloppyFunc() {
-    console.log(this === window);  // true
+function sloppyFunc()
+{
+    console.log(this);
 }
+sloppyFunc();
+
 function strictFunc() {
     'use strict';
-    console.log(this === undefined);  // true
+    console.log(this);
 }
+strictFunc();
 
 
 // get a warning when you forget new
@@ -34,23 +41,15 @@ function Point(x, y) {
 var str = 'abc';
 function sloppyFunc() {
     this.str.length = 7;  // no effect, silent failure
-    console.log(str.length);  // 3
+    console.log(str.length);
 }
+sloppyFunc();
+
 function strictFunc() {
     'use strict';
     str.length = 7; // TypeError: Cannot assign to read only property 'length' of abc
 }
-
-
-// Cannot delete unqualified identifiers like this
-delete foo;
-// in strict mode you must use
-delete window.foo;
-
-
-// In strict mode variables declared inside evaluated string by eval()
-// are not added to the scope sourrounding eval
-eval()
+strictFunc();
 
 
 // with statement not allowed in strict
@@ -69,17 +68,30 @@ with(a.b.c){
 // 2) Accessor properties
 var obj = {
     get foo() {
-        return 'getter';
+        return 'getter called';
     },
     set foo(value) {
-        console.log('setter: '+value);
+        console.log('setter called with value of : '+value);
     }
 };
 
+
+// Definign Data properties
+var obj = Object.create(
+    Object.prototype, {
+        foo: {
+            value: { string: "a" },
+            configurable: false,
+            writable: false,
+            enumerable: false
+        }
+    }
+);
+
 //Defining Accessors via Property Descriptors
 var obj = Object.create(
-    Object.prototype, {  // object with property descriptors
-        foo: {  // property descriptor
+    Object.prototype, {
+        foo: {
             get: function () {
                 return 'getter';
             },
@@ -93,8 +105,8 @@ var obj = Object.create(
 
 // 3) New Function method bind
 function add(a, b){
-	console.log("the value of this in add function: ", this);
+	console.log("the value of this:", this);
 	return a + b;
 }
-var adderOfTwo = add.bind(5, 2);
+var adderOfTwo = add.bind("yolo swag string", 2);
 console.log("Adder of two given 5: ", adderOfTwo(5));
