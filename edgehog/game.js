@@ -3,8 +3,9 @@ var CFG;
 
 window.CFG = CFG = {
   platformSpeed: 270,
-  gravity: 1350,
-  jumpVelocity: 600,
+  gravity: 2000,
+  jumpVelocity: 250,
+  maxJumpTime: 30,
   playerPositionX: .1,
   platformTypes: {
     normal: {
@@ -29,6 +30,7 @@ window.CFG = CFG = {
 
   States = {
     Boot: require('./states/boot.coffee'),
+    Loader: require('./states/loader.coffee'),
     Menu: require('./states/menu.coffee'),
     Game: require('./states/game.coffee'),
     End: require('./states/end.coffee')
@@ -37,6 +39,8 @@ window.CFG = CFG = {
   window.game = game = new Phaser.Game(800, 450, Phaser.CANVAS, '');
 
   game.state.add('Boot', States.Boot);
+
+  game.state.add('Loader', States.Loader);
 
   game.state.add('Menu', States.Menu);
 
@@ -48,7 +52,7 @@ window.CFG = CFG = {
 
 }).call(this);
 
-},{"./config/config.coffee":1,"./states/boot.coffee":7,"./states/end.coffee":8,"./states/game.coffee":9,"./states/menu.coffee":10}],3:[function(require,module,exports){
+},{"./config/config.coffee":1,"./states/boot.coffee":7,"./states/end.coffee":8,"./states/game.coffee":9,"./states/loader.coffee":10,"./states/menu.coffee":11}],3:[function(require,module,exports){
 var Platform, Star;
 
 Star = require('../models/star.coffee');
@@ -95,6 +99,9 @@ module.exports = Platform = (function() {
   };
 
   Platform.prototype.platformCollision = function(player, platform) {
+    if (!this.game.tutorial) {
+      player.animations.play('right');
+    }
     if (platform["class"].type.name === "spiked") {
       return this.state.end();
     }
@@ -269,20 +276,36 @@ module.exports = Player = (function() {
     this.sprite.body.gravity.y = CFG.gravity;
     this.sprite.animations.add('right', [0, 1, 2], 10, true);
     this.sprite.scale.setTo(.5, .5);
+    this.jumping = false;
+    this.jumpTime = 0;
     this.game.player = this;
   }
 
   Player.prototype.update = function() {
     this.game.player.sprite.body.x = this.game.width * CFG.playerPositionX;
+    if (this.jumping) {
+      this.sprite.animations.stop('right');
+      this.sprite.animations.frame = 1;
+      this.game.player.sprite.body.velocity.y = -CFG.jumpVelocity - this.jumpTime;
+      this.jumpTime += 1;
+      if (this.jumpTime > CFG.maxJumpTime) {
+        this.stop();
+      }
+    }
     if (this.game.player.sprite.body.y > this.game.height) {
       return this.state.end();
     }
   };
 
   Player.prototype.jump = function() {
-    if (!this.game.tutorial && (this.game.player.sprite.body.blocked.down || this.game.player.sprite.body.wasTouching.down)) {
-      return this.game.player.sprite.body.velocity.y = -CFG.jumpVelocity;
+    if (!this.game.tutorial && this.game.player.sprite.body.touching.down) {
+      return this.jumping = true;
     }
+  };
+
+  Player.prototype.stop = function() {
+    this.jumping = false;
+    return this.jumpTime = 0;
   };
 
   return Player;
@@ -337,25 +360,16 @@ module.exports = Star = (function() {
 },{}],7:[function(require,module,exports){
 module.exports = {
   preload: function() {
-    this.game.load.image('sky', 'assets/sky.png');
-    this.game.load.image('platform', 'assets/platform.png');
-    this.game.load.image('spikes', 'assets/spikes.png');
-    this.game.load.image('star', 'assets/star.png');
-    this.game.load.image('frame', 'assets/frame.png');
-    this.game.load.image('platform-btn', 'assets/platform-btn.png');
-    this.game.load.image('pause-btn', 'assets/pause-btn.png');
-    this.game.load.image('pause-overlay', 'assets/pause-overlay.png');
-    return this.game.load.spritesheet('dude', 'assets/dude.png', 73, 133);
-  },
-  init: function() {
+    this.game.load.image('logo', 'assets/logo.png');
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.game.scale.maxWidth = 800;
     this.game.scale.maxHeight = 450;
     this.game.scale.pageAlignHorizontally = true;
-    return this.game.scale.pageAlignVertically = true;
+    this.game.scale.pageAlignVertically = true;
+    return this.game.scale.forceLandscape = true;
   },
-  render: function() {
-    return this.game.state.start('Game');
+  create: function() {
+    return this.game.state.start('Loader');
   }
 };
 
@@ -428,14 +442,56 @@ module.exports = {
 
 
 
-},{"../models/platforms.coffee":4,"../models/player.coffee":5,"../ui/ui.coffee":11}],10:[function(require,module,exports){
+},{"../models/platforms.coffee":4,"../models/player.coffee":5,"../ui/ui.coffee":12}],10:[function(require,module,exports){
 module.exports = {
-  preload: function() {}
+  preload: function() {
+    this.logo = this.game.add.sprite(this.game.width / 2, this.game.height / 2, "logo");
+    this.logo.anchor.setTo(.5, .5);
+    this.logo.alpha = 0;
+    this.game.load.setPreloadSprite(this.logo, 0);
+    this.game.load.image('sky', 'assets/sky.png');
+    this.game.load.image('platform', 'assets/platform.png');
+    this.game.load.image('spikes', 'assets/spikes.png');
+    this.game.load.image('star', 'assets/star.png');
+    this.game.load.image('frame', 'assets/frame.png');
+    this.game.load.image('platform-btn', 'assets/platform-btn.png');
+    this.game.load.image('pause-btn', 'assets/pause-btn.png');
+    this.game.load.image('pause-overlay', 'assets/pause-overlay.png');
+    this.game.load.spritesheet('dude', 'assets/dude.png', 73, 133);
+    return this.game.load.spritesheet('button', 'assets/button.png', 200, 60);
+  },
+  create: function() {
+    this.game.state.start('Menu');
+    return this.game.add.tween(this.logo).to({
+      alpha: 1
+    }, 1000, "Linear", true).onComplete.add(function() {
+      return this.game.state.start('Menu');
+    }, this);
+  }
 };
 
 
 
 },{}],11:[function(require,module,exports){
+module.exports = {
+  create: function() {
+    var startBtn, startBtnText;
+    startBtn = this.game.add.button(this.game.world.width / 2, this.game.world.height / 2, 'button', this.onStart, this, 0, 0, 1, 0);
+    startBtn.anchor.setTo(.5, .5);
+    startBtnText = this.game.add.text(startBtn.x, startBtn.y, 'START', {
+      font: '20px sans-serif',
+      fill: '#FFF'
+    });
+    return startBtnText.anchor.setTo(0.5, 0.5);
+  },
+  onStart: function() {
+    return this.game.state.start('Game');
+  }
+};
+
+
+
+},{}],12:[function(require,module,exports){
 var UI;
 
 module.exports = UI = (function() {
@@ -468,6 +524,8 @@ module.exports = UI = (function() {
     this.firstDrag = true;
     this.platformDragBtn = this.game.add.button(this.game.width / 2, this.frame.position.y, 'platform-btn');
     this.platformDragBtn.anchor.setTo(.5, 0);
+    this.platformDragBtnPointer = null;
+    this.playerJumpPointer = null;
     this.pauseBtn = this.game.add.sprite(10, 10, 'pause-btn');
     this.game.input.onUp.add(this.onInputUp, this);
     this.game.input.onDown.add(this.onInputDown, this);
@@ -478,20 +536,20 @@ module.exports = UI = (function() {
     this.fps.setText(this.game.time.fps + ' FPS');
     this.scoreText.setText('Score: ' + parseInt(this.game.score));
     this.starsText.setText('Stars: ' + this.game.starCount);
-    if (this.dragging) {
-      return this.draggedPlatform.position.setTo(this.game.input.x, this.game.input.y);
+    if (this.draggedPlatform.alive) {
+      return this.draggedPlatform.position.setTo(this.platformDragBtnPointer.x, this.platformDragBtnPointer.y);
     }
   };
 
-  UI.prototype.onInputDown = function() {
+  UI.prototype.onInputDown = function(pointer) {
     if (this.game.paused) {
       this.game.paused = false;
       this.overlay.destroy();
       this.resumeText.destroy();
       return this.pauseText.destroy();
     } else if (this.isInputOver(this.platformDragBtn)) {
-      this.dragging = true;
-      return this.draggedPlatform.reset(this.game.input.x, this.game.input.y);
+      this.draggedPlatform.reset(this.game.input.x, this.game.input.y);
+      return this.platformDragBtnPointer = pointer;
     } else if (this.isInputOver(this.pauseBtn)) {
       this.game.paused = true;
       this.overlay = this.game.add.sprite(0, 0, 'pause-overlay');
@@ -506,19 +564,25 @@ module.exports = UI = (function() {
       });
       return this.resumeText.anchor.setTo(.5, .5);
     } else {
+      this.playerJumpPointer = pointer;
       return this.game.player.jump();
     }
   };
 
-  UI.prototype.onInputUp = function() {
+  UI.prototype.onInputUp = function(pointer) {
     var success;
-    if (this.draggedPlatform.alive && this.game.input.y < this.game.ui.frame.position.y - this.draggedPlatform.height) {
-      success = this.game.platforms.requestPlatform(this.game.input.x, this.game.input.y, CFG.platformTypes.normal, true, true);
-      if (success && this.firstDrag) {
-        this.onFirstDrag();
+    if (pointer === this.platformDragBtnPointer) {
+      if (this.draggedPlatform.alive && this.game.input.y < this.game.ui.frame.position.y - this.draggedPlatform.height) {
+        success = this.game.platforms.requestPlatform(this.game.input.x, this.game.input.y, CFG.platformTypes.normal, true, true);
+        if (success && this.firstDrag) {
+          this.onFirstDrag();
+        }
       }
+      this.draggedPlatform.kill();
     }
-    return this.draggedPlatform.kill();
+    if (pointer === this.playerJumpPointer) {
+      return this.game.player.stop();
+    }
   };
 
   UI.prototype.onFirstDrag = function() {
