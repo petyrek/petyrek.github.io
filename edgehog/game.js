@@ -461,7 +461,6 @@ module.exports = {
     return this.game.load.spritesheet('button', 'assets/button.png', 200, 60);
   },
   create: function() {
-    this.game.state.start('Menu');
     return this.game.add.tween(this.logo).to({
       alpha: 1
     }, 1000, "Linear", true).onComplete.add(function() {
