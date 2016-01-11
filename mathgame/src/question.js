@@ -6,17 +6,18 @@ function Question() {
     this.height = 0;
     this.text = "";
     this.value = 0;
+    this.image = document.getElementById("bubble");
 }
- 
+
 Question.prototype.update = function()
 {
     this.y += this.velocity;
 };
- 
+
 Question.prototype.draw = function(ctx)
 {
-    drawEllipseByCenter(ctx, this.x, this.y, this.width, this.height);
-    ctx.fillStyle = "#fff";
+    ctx.drawImage(this.image, this.x - this.image.width / 2, this.y - this.image.height / 2);
+    ctx.fillStyle = "#000";
     ctx.fillText(this.text, this.x - ctx.measureText(this.text).width / 2.0 , this.y);
 };
 
@@ -32,15 +33,26 @@ function generateQuestion(ctx, questions)
     generateQuestionText(tmp);
     questions.push(tmp);
 
-    setTimeout(function(){
-        generateQuestion(ctx, questions);
-    }, 3000);
+    (function() {
+      var time = 3000,
+          delta = 100,
+          tid;
+
+      tid = setInterval(function() {
+          if ( window.blurred ) { return; }
+          time -= delta;
+          if ( time <= 0 ) {
+              clearInterval(tid);
+              generateQuestion(ctx, questions);
+          }
+      }, delta);
+    })();
 }
 
 function generateQuestionText(q)
 {
     var operation = getRandomInt(0, 4);
-    
+
     if( operation == 0){ // plus
         var first = getRandomInt(1,50);
         var second = getRandomInt(1,50);

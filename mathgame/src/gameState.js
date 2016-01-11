@@ -18,7 +18,7 @@ function GameState(game) {
 };
 
 GameState.prototype.draw = function()
-{  
+{
     var that = this;
     // draw questions
     this.questions.forEach(function(q){
@@ -27,7 +27,7 @@ GameState.prototype.draw = function()
 
     this.lifes.draw(this.context);
     this.score.draw(this.context);
-    
+
     this.numberField.draw(this.context);
 
     // draw ui buttons
@@ -35,8 +35,8 @@ GameState.prototype.draw = function()
         b.draw(that.context);
     });
 };
- 
-GameState.prototype.update = function() 
+
+GameState.prototype.update = function()
 {
     var that = this;
     this.questions.forEach(function(q, index, object){
@@ -58,7 +58,7 @@ GameState.prototype.update = function()
 GameState.prototype.generateNumButtons = function()
 {
     var that = this;
-    btns = [];
+    var btns = [];
     for(var i = 1; i < 12; i++){
         var tmp = new Button();
         tmp.width = this.context.canvas.width / 11;

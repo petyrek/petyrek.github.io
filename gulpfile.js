@@ -4,42 +4,39 @@ var prefix = require('gulp-autoprefixer');
 var cssshrink = require('gulp-cssshrink');
 var connect = require('gulp-connect');
 var open = require('gulp-open');
-var rimraf = require('rimraf');
-var uglify = require('gulp-uglifyjs');
-var asciify = require('asciify');
+var uglify = require('gulp-uglify');
 
-gulp.task('default', ['less', 'uglify', 'connect', 'open', 'watch'], function() {
-    asciify('personal web', {color:'red', font: 'smshadow'}, function(err, res){ console.log(res); });
-});
+gulp.task('default', ['less', 'uglify', 'connect', 'open', 'watch']);
 
 gulp.task('connect', function() {
-    connect.server({
-        livereload: true,
-        root: ''
-    });
+  return connect.server({
+    livereload: true,
+    root: ''
+  });
 });
 
 gulp.task('open', function() {
-  gulp.src('')
+  return gulp.src('')
   .pipe(open({uri: 'http://localhost:8080'}));
 });
 
 gulp.task('less', function () {
-    gulp.src('./less/*.less')
-        .pipe(less())
-        .pipe(prefix())
-        .pipe(cssshrink())
-        .pipe(gulp.dest('./'))
-        .pipe(connect.reload());
+  return gulp.src('./less/**/*.less')
+  .pipe(less())
+  .pipe(prefix())
+  .pipe(cssshrink())
+  .pipe(gulp.dest('./'))
+  .pipe(connect.reload());
 });
 
 gulp.task('uglify', function() {
-    gulp.src('./js/*.js')
-        .pipe(uglify())
-        .pipe(gulp.dest('./'));
+  return gulp.src('./js/**/*.js')
+  .pipe(uglify())
+  .pipe(gulp.dest('./'))
+  .pipe(connect.reload());
 });
 
 gulp.task('watch', function () {
-    gulp.watch('./less/*.less', ['less']);
-    gulp.watch('./js/*.js', ['uglify']);
+  gulp.watch('./less/**/*', ['less']);
+  gulp.watch('./js/**/*', ['uglify']);
 });

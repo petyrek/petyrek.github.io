@@ -1,4 +1,4 @@
-function Button(x, y, width, height, text, onclick) 
+function Button(x, y, width, height, text, onclick)
 {
     var that = this;
 
@@ -36,38 +36,38 @@ function Button(x, y, width, height, text, onclick)
        	that.onKeyUp(event);
         if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8'){
             event.preventDefault();
-	    } 	
-    	
+	    }
+
     }, false);
 }
- 
-Button.prototype.onMouseDown = function(event) 
+
+Button.prototype.onMouseDown = function(event)
 {
 	var canvas = document.getElementById("game");
-	x = event.pageX - canvas.offsetLeft;
-	y = event.pageY - canvas.offsetTop;
+	var x = event.pageX - canvas.offsetLeft;
+	var y = event.pageY - canvas.offsetTop;
 	if ( this.contains(x,y) ) {
 		this.active = true;
 	}
 }
-Button.prototype.onMouseUp = function(event) 
+Button.prototype.onMouseUp = function(event)
 {
 	this.active = false;
 	var canvas = document.getElementById("game");
-	x = event.pageX - canvas.offsetLeft;
-	y = event.pageY - canvas.offsetTop;
+	var x = event.pageX - canvas.offsetLeft;
+	var y = event.pageY - canvas.offsetTop;
 	if ( this.contains(x,y) ) {
 		this.onclick();
 	}
 }
-Button.prototype.onKeyDown = function(event) 
+Button.prototype.onKeyDown = function(event)
 {
 	if(event.keyCode === this.keyCode || event.keyCode === this.altKeyCode){
 		this.active = true;
-		
+
 	}
 }
-Button.prototype.onKeyUp = function(event) 
+Button.prototype.onKeyUp = function(event)
 {
 	if(event.keyCode === this.keyCode || event.keyCode === this.altKeyCode){
 		this.active = false;
@@ -85,7 +85,7 @@ Button.prototype.draw = function(ctx)
     var off = ctx.lineWidth;
     ctx.strokeStyle = this.outlineColor;
     ctx.strokeRect(this.x, this.y, this.width, this.height);
-    
+
     ctx.fillStyle = (this.active)?  this.fontColor : this.fillColor;
     ctx.fillRect(this.x + off / 2, this.y + off / 2, this.width - off, this.height - off);
     ctx.fillStyle = (this.active)?  this.fillColor : this.fontColor;
