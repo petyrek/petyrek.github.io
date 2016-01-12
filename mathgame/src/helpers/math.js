@@ -3,7 +3,3 @@
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
-
-function swap(a, b){
-	b = [a, a = b][0];
-}

@@ -1,36 +1,42 @@
 function Game() {
-    // setup canvas
-    var canvas = document.getElementById("game");
-    var size = (window.innerHeight < window.innerWidth)? window.innerHeight : window.innerWidth;
-    size *= 0.95;
-    canvas.width = 450;
-    canvas.height = 800;
-    this.width = canvas.width;
-    this.height = canvas.height;
+  let canvas = document.getElementById("game");
 
-    this.context = canvas.getContext("2d");
-    this.context.lineWidth = this.height / 400;
-    this.context.textBaseline = "middle";
+  let x = 450;
+  let y = 800;
+  const ratio = x / y;
 
-    this.state = new MenuState(this);
+  if(window.innerWidth < x){
+    x = window.innerWidth;
+  }
+  if(window.innerHeight < y){
+    y = window.innerHeight;
+  }
+  if(x / y > ratio){
+    x = y * ratio;
+  }
+  if(x / y < ratio){
+    y = x / ratio;
+  }
+
+  canvas.width = x;
+  canvas.height = y;
+  this.width = canvas.width;
+  this.height = canvas.height;
+
+  this.ctx = canvas.getContext("2d");
+  this.state = new MenuState(this);
 };
 
-Game.prototype.draw = function()
-{
-    var ctx = this.context;
-    ctx.clearRect(0, 0, this.width, this.height);
-
-    this.state.draw();
+Game.prototype.draw = function() {
+  this.state.draw();
 };
 
-Game.prototype.update = function()
-{
-    this.state.update();
+Game.prototype.update = function() {
+  this.state.update();
 };
 
-var game = new Game();
-function Run() {
-  window.requestAnimationFrame(Run);
-  game.update();
-  game.draw();
+Game.prototype.run = function() {
+  window.requestAnimationFrame(() => this.run());
+  this.update();
+  this.draw();
 }
