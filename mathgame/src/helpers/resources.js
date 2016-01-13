@@ -11,7 +11,7 @@ function Resources() {
   this.loadImage('lifes', 'assets/lifes.png');
   this.loadImage('sound', 'assets/sound.png');
   this.loadImage('sound-off', 'assets/sound-off.png');
-  this.loadSound('cheer', 'assets/cheer.ogg');
+  this.loadSound('cheer', 'assets/cheer.mp3');
 }
 
 Resources.prototype.loadImage = function(key, src){

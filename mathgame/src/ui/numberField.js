@@ -29,7 +29,7 @@ NumberField.prototype.numberPressed = function(i) {
 
 NumberField.prototype.checkAnswers = function() {
   let value = parseInt(this.text.getText());
-  for (let q of this.state.questions.questions){
+  this.state.questions.questions.forEach((q) => {
     if (q.value == value){
       this.text.setText('');
       this.state.score.increaseScore();
@@ -38,5 +38,5 @@ NumberField.prototype.checkAnswers = function() {
       Resources.playSound('cheer');
       return;
     }
-  }
+  });
 }
