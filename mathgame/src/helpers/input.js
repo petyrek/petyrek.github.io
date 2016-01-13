@@ -6,8 +6,8 @@ function Input() {
 
   document.body.ontouchstart = (e) => {
     this.mouseDown = true;
-    this.touchX = e.touches[0].screenX;
-    this.touchY = e.touches[0].screenY;
+    this.touchX = e.touches[0].pageX;
+    this.touchY = e.touches[0].pageY;
   }
   document.body.ontouchend = (e) => {
     this.mouseDown = false;
@@ -29,9 +29,23 @@ Input.prototype.isMouseDown = function(button){
     let canvas = document.getElementById("game");
     let rect = canvas.getBoundingClientRect();
 
-    let x = (this.touchX - rect.left) * ((window.innerWidth < canvas.width)? canvas.width / window.innerWidth : 1);
-    let y = (this.touchY - rect.top) * ((window.innerHeight < canvas.height)? canvas.height / window.innerHeight : 1)
+    let scaleX = 1, scaleY = 1;
+    if(window.innerWidth < canvas.width){
+      scaleX = canvas.width / window.innerWidth;
+    }
+    if(canvas.width < canvas.clientWidth){
+      scaleX = canvas.width / canvas.clientWidth;
+    }
 
+    if(window.innerHeight < canvas.height){
+      scaleY = canvas.height / window.innerHeight;
+    }
+    if(canvas.height < canvas.clientHeight){
+      scaleY = canvas.height / canvas.clientHeight;
+    }
+
+    let x = (this.touchX - rect.left) * scaleX;
+    let y = (this.touchY - rect.top) * scaleY;
     if(button.contains(x, y)){
       this.mouseEventFired = true;
       return true;
