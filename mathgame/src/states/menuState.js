@@ -12,7 +12,6 @@ function MenuState(game) {
     "TODDLER",
     'menu-btn',
     () => {
-      console.log('ahoj');
       game.state = new GameState(game, 0);
     },
     "#0a7bff",
@@ -46,7 +45,7 @@ function MenuState(game) {
   this.startButton3 = new Button(
     this.ctx.canvas.width / 2,
     this.ctx.canvas.height * .7,
-    "MATHEMATICIAN",
+    "EXPERT",
     'menu-btn',
     () => {
       game.state = new GameState(game, 3);

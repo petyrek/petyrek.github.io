@@ -45,7 +45,7 @@ function Keyboard(state) {
   this.btns.push(new Button(
     this.ctx.canvas.width / 8 * 4,
     this.ctx.canvas.height,
-    "DELETE",
+    "DEL",
     'keyboard-btn-del',
     () => {
       this.state.numberField.numberPressed(10);

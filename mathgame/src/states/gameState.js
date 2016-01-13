@@ -4,6 +4,7 @@ function GameState(game, difficulty) {
 
   this.bg = Resources.getImage('game-bg');
 
+  this.difficulty = difficulty;
   this.lifes = new Lifes(3, this.ctx);
   this.score = new Score();
 
@@ -27,6 +28,6 @@ GameState.prototype.update = function() {
   this.keyboard.update();
 
   if (this.lifes.lifes < 1){
-    this.game.state = new EndState(this.game, this.score.points);
+    this.game.state = new EndState(this.game, this.score.points, this.difficulty);
   }
 };

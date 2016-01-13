@@ -13,7 +13,7 @@ Game.prototype.initCanvas = function() {
   canvas.style.height = window.innerHeight + "px";
 
   this.ctx = canvas.getContext("2d");
-  this.ctx.font = "30px messy_fika";
+  this.ctx.font = "40px messy_fika";
 
   this.width = canvas.width;
   this.height = canvas.height;

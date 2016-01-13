@@ -5,8 +5,8 @@ function NumberField(state) {
   this.img = Resources.getImage('numberfield');
 
   this.x = 0;
-  this.y = this.ctx.canvas.height - 56;
-  this.text = new Text('0', this.img.width / 2, this.y + this.img.height / 2, "#000", 0.5, 0.5);
+  this.y = this.ctx.canvas.height - 56  ;
+  this.text = new Text('0', this.img.width / 2, this.y + this.img.height / 2 + 5, "#000", 0.5, 0.5);
 }
 
 NumberField.prototype.draw = function(ctx) {
@@ -21,7 +21,7 @@ NumberField.prototype.numberPressed = function(i) {
     if (i < 10) {
       this.text.setText(i + "");
     }
-  } else if (this.text.getText().length < 10) {
+  } else if (this.text.getText().length < 6) {
     this.text.setText(this.text.getText() + i); // number is pressed
   }
   this.checkAnswers();

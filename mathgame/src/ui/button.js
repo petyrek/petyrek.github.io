@@ -2,7 +2,7 @@ function Button(x, y, text, image, onclick, fontColor, anchorX = 0, anchorY = 0)
   this.x = x;
   this.y = y;
   this.image = Resources.getImage(image);
-  this.text = new Text(text, x + this.image.width / 2 - this.image.width * anchorX, y + this.image.height / 2 - this.image.height * anchorY, fontColor, 0.5, 0.5);
+  this.text = new Text(text, x + this.image.width / 2 - this.image.width * anchorX, y + this.image.height / 2 - this.image.height * anchorY + 5, fontColor, 0.5, 0.5);
 
   this.anchor = {
     x: anchorX,

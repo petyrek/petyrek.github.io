@@ -17,7 +17,7 @@ Question.prototype.draw = function(ctx) {
   ctx.fillStyle = "#fff";
   ctx.font = "30px sans-serif";
   ctx.fillText(this.text, this.x + this.image.width / 2 - ctx.measureText(this.text).width / 2.0, this.y + this.image.height / 2 + 22 / 2);
-  ctx.font = "30px messy_fika";
+  ctx.font = "40px messy_fika";
 };
 
 Question.prototype.generateQuestionText = function(difficulty) {
