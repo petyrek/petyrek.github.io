@@ -41,6 +41,7 @@ Questions.prototype.update = function() {
       let index = this.questions.indexOf(q);
       this.questions.splice(index, 1);
       this.state.lifes.loseLife();
+      Resources.playSound('error');
     }
   });
 }

@@ -131,7 +131,9 @@ function Resources() {
   this.loadImage('lifes', 'assets/lifes.png');
   this.loadImage('sound', 'assets/sound.png');
   this.loadImage('sound-off', 'assets/sound-off.png');
+  this.loadImage('back-arrow-btn', 'assets/back-arrow-btn.png');
   this.loadSound('check', 'assets/check.m4a');
+  this.loadSound('error', 'assets/error.m4a');
 }
 
 Resources.prototype.loadImage = function (key, src) {
@@ -152,163 +154,6 @@ Resources.prototype.playSound = function (key) {
   if (game.soundEnabled) {
     this.memory[key].play();
   }
-};
-
-function EndState(game, points, difficulty) {
-  this.game = game;
-  this.ctx = game.ctx;
-
-  this.bg = Resources.getImage('game-bg');
-
-  this.scoreText = new Text("YOUR SCORE: " + points, this.game.width / 2, this.game.height * .2, '#000', 0.5, 0.5);
-
-  this.backButton = new Button(game.width / 2, game.height * .8, "BACK", "menu-btn", function () {
-    game.state = new MenuState(game);
-  }, "#0a7bff", .5, .5);
-
-  this.scores = localStorage.getItem('score' + difficulty) || [];
-  if (this.scores.length > 0) {
-    this.scores = JSON.parse(this.scores);
-    this.highscores = [new Text("HIGHSCORES", this.game.width / 2, this.game.height * .35, '#000', 0.5, 0.5)];
-    for (var i = 0; i < this.scores.length; i++) {
-      this.highscores.push(new Text(i + 1 + ': ' + this.scores[i], this.game.width / 2, this.game.height * (0.40 + i / 20), '#000', 0.5, 0.5));
-    }
-  }
-
-  if (points > 0) {
-    this.scores.push(points);
-    this.scores.sort(function (a, b) {
-      return b - a;
-    });
-    this.scores = this.scores.slice(0, 5);
-    localStorage.setItem('score' + difficulty, JSON.stringify(this.scores));
-  }
-};
-
-EndState.prototype.draw = function () {
-  this.ctx.drawImage(this.bg, 0, 0);
-  this.scoreText.draw(this.ctx);
-  this.backButton.draw(this.ctx);
-  if (this.highscores) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = this.highscores[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var t = _step.value;
-
-        t.draw(this.ctx);
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-  }
-};
-
-EndState.prototype.update = function () {
-  this.backButton.update();
-};
-
-function GameState(game, difficulty) {
-  this.game = game;
-  this.ctx = game.ctx;
-
-  this.bg = Resources.getImage('game-bg');
-
-  this.difficulty = difficulty;
-  this.lifes = new Lifes(3, this.ctx);
-  this.score = new Score();
-
-  this.keyboard = new Keyboard(this);
-  this.numberField = new NumberField(this);
-  this.questions = new Questions(this, difficulty);
-};
-
-GameState.prototype.draw = function () {
-  this.ctx.drawImage(this.bg, 0, 0);
-
-  this.questions.draw(this.ctx);
-  this.lifes.draw(this.ctx);
-  this.score.draw(this.ctx);
-  this.numberField.draw(this.ctx);
-  this.keyboard.draw(this.ctx);
-};
-
-GameState.prototype.update = function () {
-  this.questions.update();
-  this.keyboard.update();
-
-  if (this.lifes.lifes < 1) {
-    this.game.state = new EndState(this.game, this.score.points, this.difficulty);
-  }
-};
-
-function MenuState(game) {
-  var _this3 = this;
-
-  this.game = game;
-  this.ctx = game.ctx;
-
-  this.bg = Resources.getImage('menu-bg');
-
-  this.game.soundEnabled = localStorage.getItem('soundEnabled') != 'false';
-
-  this.startButton0 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .4, "TODDLER", 'menu-btn', function () {
-    game.state = new GameState(game, 0);
-  }, "#0a7bff", .5, .5);
-  this.startButton1 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .5, "KID", 'menu-btn', function () {
-    game.state = new GameState(game, 1);
-  }, "#0a7bff", .5, .5);
-  this.startButton2 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .6, "ADULT", 'menu-btn', function () {
-    game.state = new GameState(game, 2);
-  }, "#0a7bff", .5, .5);
-  this.startButton3 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .7, "EXPERT", 'menu-btn', function () {
-    game.state = new GameState(game, 3);
-  }, "#0a7bff", .5, .5);
-  this.soundButton = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .9, "", this.game.soundEnabled ? 'sound' : 'sound-off', function () {
-    console.log('sup');
-    _this3.toggleSound();
-  }, "#fff", .5, .5);
-};
-
-MenuState.prototype.draw = function () {
-  this.ctx.drawImage(this.bg, 0, 0);
-  this.startButton0.draw(this.ctx);
-  this.startButton1.draw(this.ctx);
-  this.startButton2.draw(this.ctx);
-  this.startButton3.draw(this.ctx);
-  this.soundButton.draw(this.ctx);
-};
-
-MenuState.prototype.update = function () {
-  this.startButton0.update();
-  this.startButton1.update();
-  this.startButton2.update();
-  this.startButton3.update();
-  this.soundButton.update();
-};
-
-MenuState.prototype.toggleSound = function () {
-  if (this.game.soundEnabled) {
-    this.soundButton.image = Resources.getImage('sound-off');
-    this.game.soundEnabled = false;
-  } else {
-    this.soundButton.image = Resources.getImage('sound');
-    this.game.soundEnabled = true;
-  }
-  localStorage.setItem('soundEnabled', this.game.soundEnabled);
 };
 
 function Question(state, difficulty) {
@@ -442,24 +287,188 @@ Questions.prototype.generateQuestions = function () {
 };
 
 Questions.prototype.draw = function () {
-  var _this4 = this;
+  var _this3 = this;
 
   this.questions.forEach(function (q) {
-    q.draw(_this4.ctx);
+    q.draw(_this3.ctx);
   });
 };
 
 Questions.prototype.update = function () {
-  var _this5 = this;
+  var _this4 = this;
 
   this.questions.forEach(function (q) {
     q.update();
-    if (q.y > _this5.state.game.height - 90) {
-      var index = _this5.questions.indexOf(q);
-      _this5.questions.splice(index, 1);
-      _this5.state.lifes.loseLife();
+    if (q.y > _this4.state.game.height - 90) {
+      var index = _this4.questions.indexOf(q);
+      _this4.questions.splice(index, 1);
+      _this4.state.lifes.loseLife();
+      Resources.playSound('error');
     }
   });
+};
+
+function EndState(game, points, difficulty) {
+  this.game = game;
+  this.ctx = game.ctx;
+
+  this.bg = Resources.getImage('game-bg');
+
+  this.scoreText = new Text("YOUR SCORE: " + points, this.game.width / 2, this.game.height * .2, '#000', 0.5, 0.5);
+
+  this.backButton = new Button(game.width / 2, game.height * .8, "BACK", "menu-btn", function () {
+    game.state = new MenuState(game);
+  }, "#0a7bff", .5, .5);
+
+  this.scores = localStorage.getItem('score' + difficulty) || [];
+  if (this.scores.length > 0) {
+    this.scores = JSON.parse(this.scores);
+    this.highscores = [new Text("HIGHSCORES", this.game.width / 2, this.game.height * .35, '#000', 0.5, 0.5)];
+    for (var i = 0; i < this.scores.length; i++) {
+      this.highscores.push(new Text(i + 1 + ': ' + this.scores[i], this.game.width / 2, this.game.height * (0.40 + i / 20), '#000', 0.5, 0.5));
+    }
+  }
+
+  if (points > 0) {
+    this.scores.push(points);
+    this.scores.sort(function (a, b) {
+      return b - a;
+    });
+    this.scores = this.scores.slice(0, 5);
+    localStorage.setItem('score' + difficulty, JSON.stringify(this.scores));
+  }
+};
+
+EndState.prototype.draw = function () {
+  this.ctx.drawImage(this.bg, 0, 0);
+  this.scoreText.draw(this.ctx);
+  this.backButton.draw(this.ctx);
+  if (this.highscores) {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = this.highscores[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var t = _step.value;
+
+        t.draw(this.ctx);
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+  }
+};
+
+EndState.prototype.update = function () {
+  this.backButton.update();
+};
+
+function GameState(game, difficulty) {
+  this.game = game;
+  this.ctx = game.ctx;
+
+  this.bg = Resources.getImage('game-bg');
+
+  this.difficulty = difficulty;
+  this.lifes = new Lifes(3, this.ctx);
+  this.score = new Score();
+
+  this.keyboard = new Keyboard(this);
+  this.numberField = new NumberField(this);
+  this.questions = new Questions(this, difficulty);
+
+  this.backButton = new Button(5, 40, "", "back-arrow-btn", function () {
+    game.state = new MenuState(game);
+  }, "", 0, 0);
+};
+
+GameState.prototype.draw = function () {
+  this.ctx.drawImage(this.bg, 0, 0);
+
+  this.questions.draw(this.ctx);
+  this.lifes.draw(this.ctx);
+  this.score.draw(this.ctx);
+  this.backButton.draw(this.ctx);
+  this.numberField.draw(this.ctx);
+  this.keyboard.draw(this.ctx);
+};
+
+GameState.prototype.update = function () {
+  this.questions.update();
+  this.keyboard.update();
+  this.backButton.update();
+
+  if (this.lifes.lifes < 1) {
+    this.game.state = new EndState(this.game, this.score.points, this.difficulty);
+  }
+};
+
+function MenuState(game) {
+  var _this5 = this;
+
+  this.game = game;
+  this.ctx = game.ctx;
+
+  this.bg = Resources.getImage('menu-bg');
+
+  this.game.soundEnabled = localStorage.getItem('soundEnabled') != 'false';
+
+  this.startButton0 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .4, "TODDLER", 'menu-btn', function () {
+    game.state = new GameState(game, 0);
+  }, "#0a7bff", .5, .5);
+  this.startButton1 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .5, "KID", 'menu-btn', function () {
+    game.state = new GameState(game, 1);
+  }, "#0a7bff", .5, .5);
+  this.startButton2 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .6, "ADULT", 'menu-btn', function () {
+    game.state = new GameState(game, 2);
+  }, "#0a7bff", .5, .5);
+  this.startButton3 = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .7, "EXPERT", 'menu-btn', function () {
+    game.state = new GameState(game, 3);
+  }, "#0a7bff", .5, .5);
+  this.soundButton = new Button(this.ctx.canvas.width / 2, this.ctx.canvas.height * .9, "", this.game.soundEnabled ? 'sound' : 'sound-off', function () {
+    console.log('sup');
+    _this5.toggleSound();
+  }, "#fff", .5, .5);
+};
+
+MenuState.prototype.draw = function () {
+  this.ctx.drawImage(this.bg, 0, 0);
+  this.startButton0.draw(this.ctx);
+  this.startButton1.draw(this.ctx);
+  this.startButton2.draw(this.ctx);
+  this.startButton3.draw(this.ctx);
+  this.soundButton.draw(this.ctx);
+};
+
+MenuState.prototype.update = function () {
+  this.startButton0.update();
+  this.startButton1.update();
+  this.startButton2.update();
+  this.startButton3.update();
+  this.soundButton.update();
+};
+
+MenuState.prototype.toggleSound = function () {
+  if (this.game.soundEnabled) {
+    this.soundButton.image = Resources.getImage('sound-off');
+    this.game.soundEnabled = false;
+  } else {
+    this.soundButton.image = Resources.getImage('sound');
+    this.game.soundEnabled = true;
+  }
+  localStorage.setItem('soundEnabled', this.game.soundEnabled);
 };
 
 function Button(x, y, text, image, onclick, fontColor) {

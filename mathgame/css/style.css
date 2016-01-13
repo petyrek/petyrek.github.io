@@ -1,6 +1,7 @@
 html {
   background: #fff;
   height: 100%;
+  -ms-content-zooming: none;
 }
 body {
   height: 100%;
