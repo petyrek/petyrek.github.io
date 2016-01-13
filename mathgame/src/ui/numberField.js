@@ -5,14 +5,11 @@ function NumberField(state) {
   this.img = Resources.getImage('numberfield');
 
   this.x = 0;
-  this.y = this.ctx.canvas.height - 90;
-  this.width = this.ctx.canvas.width * 0.7;
-  this.height = 45;
-  this.text = new Text('0', this.width / 2, this.y + this.height / 2, "#000", 0.5, 0.5);
+  this.y = this.ctx.canvas.height - 56;
+  this.text = new Text('0', this.img.width / 2, this.y + this.img.height / 2, "#000", 0.5, 0.5);
 }
 
 NumberField.prototype.draw = function(ctx) {
-  ctx.strokeRect(this.x, this.y, this.width, this.height);
   ctx.drawImage(this.img, 0, this.y);
   this.text.draw(ctx);
 }
@@ -28,7 +25,7 @@ NumberField.prototype.numberPressed = function(i) {
     this.text.setText(this.text.getText() + i); // number is pressed
   }
   this.checkAnswers();
-} 
+}
 
 NumberField.prototype.checkAnswers = function() {
   let value = parseInt(this.text.getText());
@@ -38,6 +35,7 @@ NumberField.prototype.checkAnswers = function() {
       this.state.score.increaseScore();
       let index = this.state.questions.questions.indexOf(q);
       this.state.questions.questions.splice(index, 1);
+      Resources.playSound('cheer');
       return;
     }
   }

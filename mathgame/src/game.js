@@ -7,30 +7,16 @@ function Game() {
 
 Game.prototype.initCanvas = function() {
   let canvas = document.getElementById("game");
-  let x = 450;
-  let y = 800;
-  const ratio = x / y;
-
-  if(window.innerWidth < x){
-    x = window.innerWidth;
-  }
-  if(window.innerHeight < y){
-    y = window.innerHeight;
-  }
-  if(x / y > ratio){
-    x = y * ratio;
-  }
-  if(x / y < ratio){
-    y = x / ratio;
-  }
-
-  canvas.width = x;
-  canvas.height = y;
-  this.width = canvas.width;
-  this.height = canvas.height;
+  canvas.width = 450;
+  canvas.height = 800;
+  canvas.style.width = window.innerWidth + "px";
+  canvas.style.height = window.innerHeight + "px";
 
   this.ctx = canvas.getContext("2d");
   this.ctx.font = "30px messy_fika";
+
+  this.width = canvas.width;
+  this.height = canvas.height;
   this.state = new MenuState(this);
 }
 

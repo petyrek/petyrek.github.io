@@ -2,7 +2,6 @@ function GameState(game, difficulty) {
   this.game = game;
   this.ctx = game.ctx;
 
-  this.difficulty = difficulty;
   this.bg = Resources.getImage('game-bg');
 
   this.lifes = new Lifes(3, this.ctx);
@@ -10,7 +9,7 @@ function GameState(game, difficulty) {
 
   this.keyboard = new Keyboard(this);
   this.numberField = new NumberField(this);
-  this.questions = new Questions(this);
+  this.questions = new Questions(this, difficulty);
 };
 
 GameState.prototype.draw = function() {

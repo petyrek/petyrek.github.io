@@ -3,13 +3,12 @@ function Keyboard(state) {
   this.ctx = state.ctx;
   this.btns = [];
 
-  for (let i = 0; i < 11; i++) {
-
+  for (let i = 1; i < 9; i++) {
     let btn = new Button(
-      (i === 10)? this.ctx.canvas.width * 0.7 : (i) * this.ctx.canvas.width / 10,
-      (i === 10)? this.ctx.canvas.height - 45 : this.ctx.canvas.height,
-      (i === 10)? "DELETE" : i + "",
-      (i === 10)? 'keyboard-btn-del' : 'keyboard-btn',
+      (i - 1) * this.ctx.canvas.width / 8,
+      this.ctx.canvas.height - 56,
+      i + "",
+      'keyboard-btn',
       () => {
         this.state.numberField.numberPressed(i);
       },
@@ -19,6 +18,42 @@ function Keyboard(state) {
     );
     this.btns.push(btn);
   }
+  this.btns.push(new Button(
+    this.ctx.canvas.width / 8 * 6,
+    this.ctx.canvas.height,
+    "9",
+    'keyboard-btn',
+    () => {
+      this.state.numberField.numberPressed(9);
+    },
+    '#0a7bff',
+    0,
+    1
+  ));
+  this.btns.push(new Button(
+    this.ctx.canvas.width / 8 * 7,
+    this.ctx.canvas.height,
+    "0",
+    'keyboard-btn',
+    () => {
+      this.state.numberField.numberPressed(0);
+    },
+    '#0a7bff',
+    0,
+    1
+  ));
+  this.btns.push(new Button(
+    this.ctx.canvas.width / 8 * 4,
+    this.ctx.canvas.height,
+    "DELETE",
+    'keyboard-btn-del',
+    () => {
+      this.state.numberField.numberPressed(10);
+    },
+    '#0a7bff',
+    0,
+    1
+  ));
 }
 
 

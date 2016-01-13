@@ -1,11 +1,11 @@
-function Question(state) {
+function Question(state, difficulty) {
   this.state = state;
   this.image = Resources.getImage('bubble');
 
   this.x = getRandomInt(0, state.game.width - this.image.width);
   this.y = 0 - this.image.height
   this.velocity = 2;
-  this.generateQuestionText();
+  this.generateQuestionText(difficulty);
 }
 
 Question.prototype.update = function() {
@@ -20,12 +20,22 @@ Question.prototype.draw = function(ctx) {
   ctx.font = "30px messy_fika";
 };
 
-Question.prototype.generateQuestionText = function() {
-  const operation = getRandomInt(0, 4);
+Question.prototype.generateQuestionText = function(difficulty) {
+  const operation = getRandomInt(0, difficulty == 0? 1 : 4); // only addition for toddlers
 
   if (operation == 0) { // plus
-    let first = getRandomInt(1, 50);
-    let second = getRandomInt(1, 50);
+    let highestNumber = 120;
+    if(difficulty == 0){
+      highestNumber = 4;
+    }
+    if(difficulty == 1){
+      highestNumber = 15;
+    }
+    if(difficulty == 2){
+      highestNumber = 50;
+    }
+    let first = getRandomInt(1, highestNumber);
+    let second = getRandomInt(1, highestNumber);
 
     this.text = first + " + " + second;
     this.value = first + second;
@@ -33,8 +43,16 @@ Question.prototype.generateQuestionText = function() {
   }
 
   if (operation == 1) { // minus
-    let first = getRandomInt(1, 50);
-    let second = getRandomInt(1, 50);
+    let highestNumber = 120;
+    if(difficulty == 1){
+      highestNumber = 10;
+    }
+    if(difficulty == 2){
+      highestNumber = 50;
+    }
+
+    let first = getRandomInt(1, highestNumber);
+    let second = getRandomInt(1, highestNumber);
     if (first < second) {
       second = [first, first = second][0];
     }
@@ -44,18 +62,34 @@ Question.prototype.generateQuestionText = function() {
     return;
   }
   if (operation == 2) { // multiply
-    let first = getRandomInt(1, 10);
-    let second = getRandomInt(1, 10);
+    let highestNumber = 20;
+    if(difficulty == 1){
+      highestNumber = 5;
+    }
+    if(difficulty == 2){
+      highestNumber = 10;
+    }
+
+    let first = getRandomInt(1, highestNumber);
+    let second = getRandomInt(1, highestNumber);
 
     this.text = first + " × " + second;
     this.value = first * second;
     return;
   }
   if (operation == 3) { // divide
-    let first = getRandomInt(1, 10);
-    let second = getRandomInt(1, 10);
+    let highestNumber = 20;
+    if(difficulty == 1){
+      highestNumber = 5;
+    }
+    if(difficulty == 2){
+      highestNumber = 10;
+    }
 
-    this.text = (first * second) + " ÷ " + second;
+    let first = getRandomInt(1, highestNumber);
+    let second = getRandomInt(1, highestNumber);
+
+    this.text = (first * second) + " / " + second;
     this.value = first;
     return;
   }

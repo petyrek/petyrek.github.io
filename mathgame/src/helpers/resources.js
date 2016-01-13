@@ -11,6 +11,7 @@ function Resources() {
   this.loadImage('lifes', 'assets/lifes.png');
   this.loadImage('sound', 'assets/sound.png');
   this.loadImage('sound-off', 'assets/sound-off.png');
+  this.loadSound('cheer', 'assets/cheer.ogg');
 }
 
 Resources.prototype.loadImage = function(key, src){
@@ -21,4 +22,14 @@ Resources.prototype.loadImage = function(key, src){
 
 Resources.prototype.getImage = function(key){
   return this.memory[key];
+}
+
+Resources.prototype.loadSound = function(key, src){
+  this.memory[key] = new Audio(src);
+}
+
+Resources.prototype.playSound = function(key){
+  if(game.soundEnabled){
+    this.memory[key].play();
+  }
 }

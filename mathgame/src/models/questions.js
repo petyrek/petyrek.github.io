@@ -1,13 +1,14 @@
-function Questions(state) {
+function Questions(state, difficulty) {
   this.state = state;
   this.ctx = state.ctx;
 
+  this.difficulty = difficulty;
   this.questions = []
   this.generateQuestions();
 }
 
 Questions.prototype.generateQuestions = function() {
-  this.questions.push(new Question(this.state));
+  this.questions.push(new Question(this.state, this.difficulty));
 
   (function(that) {
     var time = 3000,
