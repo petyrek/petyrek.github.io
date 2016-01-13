@@ -1,29 +1,31 @@
 function EndState(game, points) {
   this.game = game;
+  this.ctx = game.ctx;
 
-  this.scoreText = "Your score: " + points;
-  this.context = game.context;
+  this.bg = Resources.getImage('game-bg');
 
-  this.context.font = game.height / 20 + "px serif";
-  this.context.strokeStyle = "#ddd";
-  this.context.lineWidth = game.height / 400;
+  this.scoreText = new Text("YOUR SCORE: " + points, this.game.width / 2, this.game.height * .2, '#000', 0.5, 0.5);
 
   this.backButton = new Button(
-    game.width / 5,
-    game.height / 1.25,
-    game.width - game.width / 2.5,
-    game.height / 10,
+    game.width / 2,
+    game.height * .8,
     "BACK",
-    function() {
+    "menu-btn",
+    () => {
       game.state = new MenuState(game);
-    }
+    },
+    "#0a7bff",
+    .5,
+    .5
   );
 };
 
 EndState.prototype.draw = function() {
-  this.context.fillStyle = "#fff";
-  this.context.fillText(this.scoreText, this.game.width / 2.0 - this.context.measureText(this.scoreText).width / 2.0, this.game.height / 2);
-  this.backButton.draw(this.context);
+  this.ctx.drawImage(this.bg, 0, 0);
+  this.scoreText.draw(this.ctx);
+  this.backButton.draw(this.ctx);
 };
 
-EndState.prototype.update = function() {};
+EndState.prototype.update = function() {
+  this.backButton.update();
+};

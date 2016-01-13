@@ -4,30 +4,29 @@ function Keyboard(state) {
   this.btns = [];
 
   for (let i = 0; i < 11; i++) {
+
     let btn = new Button(
-      (i) * this.ctx.canvas.width / 11,
-      this.ctx.canvas.height - 50,
-      this.ctx.canvas.width / 11,
-      50,
-      i + "",
+      (i === 10)? this.ctx.canvas.width * 0.7 : (i) * this.ctx.canvas.width / 10,
+      (i === 10)? this.ctx.canvas.height - 45 : this.ctx.canvas.height,
+      (i === 10)? "DELETE" : i + "",
+      (i === 10)? 'keyboard-btn-del' : 'keyboard-btn',
       () => {
         this.state.numberField.numberPressed(i);
-      }
+      },
+      '#0a7bff',
+      0,
+      1
     );
-
-    btn.keyCode = i + 96;
-    btn.altKeyCode = i + 48;
-
-    if (i == 10) {
-      btn.text.text = "del";
-      btn.keyCode = 8;
-      btn.altKeyCode = null;
-    }
-
     this.btns.push(btn);
   }
 }
 
+
+Keyboard.prototype.update = function(context){
+  this.btns.forEach((b) => {
+    b.update();
+  });
+}
 Keyboard.prototype.draw = function(context){
   this.btns.forEach((b) => {
     b.draw(this.ctx);

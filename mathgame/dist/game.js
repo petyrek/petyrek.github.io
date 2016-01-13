@@ -1,8 +1,14 @@
 "use strict";
 
 function Game() {
-  var canvas = document.getElementById("game");
+  window.Resources = new Resources();
+  window.Input = new Input();
 
+  this.initCanvas();
+};
+
+Game.prototype.initCanvas = function () {
+  var canvas = document.getElementById("game");
   var x = 450;
   var y = 800;
   var ratio = x / y;
@@ -26,6 +32,7 @@ function Game() {
   this.height = canvas.height;
 
   this.ctx = canvas.getContext("2d");
+  this.ctx.font = "30px messy_fika";
   this.state = new MenuState(this);
 };
 
@@ -47,10 +54,73 @@ Game.prototype.run = function () {
   this.draw();
 };
 
-function Question(ctx) {
-  this.image = document.getElementById("bubble");
+function Input() {
+  var _this2 = this;
 
-  this.x = getRandomInt(0, ctx.canvas.width - this.image.width);
+  this.mouseDown = false;
+  this.mouseEvent = null;
+  this.mouseEventFired = false;
+
+  document.body.onmousedown = function (e) {
+    _this2.mouseDown = true;
+    _this2.mouseEvent = e;
+  };
+  document.body.onmouseup = function () {
+    _this2.mouseDown = false;
+    _this2.mouseEventFired = false;
+  };
+}
+
+Input.prototype.isMouseDown = function (button) {
+  if (!this.mouseEventFired && this.mouseDown) {
+    var canvas = document.getElementById("game");
+    var x = Input.mouseEvent.pageX - canvas.offsetLeft;
+    var y = Input.mouseEvent.pageY - canvas.offsetTop;
+    if (button.contains(x, y)) {
+      this.mouseEventFired = true;
+      return true;
+    }
+  } else {
+    return false;
+  }
+};
+
+// Returns a random integer between min (included) and max (excluded)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function Resources() {
+  this.memory = [];
+
+  this.loadImage('bubble', 'assets/bubble.png');
+  this.loadImage('menu-btn', 'assets/menu-btn.png');
+  this.loadImage('menu-bg', 'assets/menu-bg.png');
+  this.loadImage('keyboard-btn', 'assets/keyboard-btn.png');
+  this.loadImage('keyboard-btn-del', 'assets/keyboard-btn-del.png');
+  this.loadImage('numberfield', 'assets/numberfield.png');
+  this.loadImage('game-bg', 'assets/game-bg.png');
+  this.loadImage('lifes', 'assets/lifes.png');
+  this.loadImage('sound', 'assets/sound.png');
+  this.loadImage('sound-off', 'assets/sound-off.png');
+}
+
+Resources.prototype.loadImage = function (key, src) {
+  var el = document.createElement("img");
+  el.setAttribute('src', src);
+  this.memory[key] = el;
+};
+
+Resources.prototype.getImage = function (key) {
+  return this.memory[key];
+};
+
+function Question(state) {
+  this.state = state;
+  this.image = Resources.getImage('bubble');
+
+  this.x = getRandomInt(0, state.game.width - this.image.width);
   this.y = 0 - this.image.height;
   this.velocity = 2;
   this.generateQuestionText();
@@ -61,9 +131,11 @@ Question.prototype.update = function () {
 };
 
 Question.prototype.draw = function (ctx) {
-  ctx.drawImage(this.image, this.x - this.image.width / 2, this.y - this.image.height / 2);
-  ctx.fillStyle = "#000";
-  ctx.fillText(this.text, this.x - ctx.measureText(this.text).width / 2.0, this.y);
+  ctx.drawImage(this.image, this.x, this.y);
+  ctx.fillStyle = "#fff";
+  ctx.font = "30px sans-serif";
+  ctx.fillText(this.text, this.x + this.image.width / 2 - ctx.measureText(this.text).width / 2.0, this.y + this.image.height / 2 + 22 / 2);
+  ctx.font = "30px messy_fika";
 };
 
 Question.prototype.generateQuestionText = function () {
@@ -74,7 +146,7 @@ Question.prototype.generateQuestionText = function () {
     var first = getRandomInt(1, 50);
     var second = getRandomInt(1, 50);
 
-    this.text = first + "+" + second;
+    this.text = first + " + " + second;
     this.value = first + second;
     return;
   }
@@ -87,7 +159,7 @@ Question.prototype.generateQuestionText = function () {
       second = [first, first = second][0];
     }
 
-    this.text = first + "-" + second;
+    this.text = first + " - " + second;
     this.value = first - second;
     return;
   }
@@ -96,7 +168,7 @@ Question.prototype.generateQuestionText = function () {
     var first = getRandomInt(1, 10);
     var second = getRandomInt(1, 10);
 
-    this.text = first + "*" + second;
+    this.text = first + " × " + second;
     this.value = first * second;
     return;
   }
@@ -105,7 +177,7 @@ Question.prototype.generateQuestionText = function () {
     var first = getRandomInt(1, 10);
     var second = getRandomInt(1, 10);
 
-    this.text = first * second + "/" + second;
+    this.text = first * second + " ÷ " + second;
     this.value = first;
     return;
   }
@@ -120,7 +192,7 @@ function Questions(state) {
 }
 
 Questions.prototype.generateQuestions = function () {
-  this.questions.push(new Question(this.ctx));
+  this.questions.push(new Question(this.state));
 
   (function (that) {
     var time = 3000,
@@ -140,10 +212,10 @@ Questions.prototype.generateQuestions = function () {
 };
 
 Questions.prototype.draw = function () {
-  var _this2 = this;
+  var _this3 = this;
 
   this.questions.forEach(function (q) {
-    q.draw(_this2.ctx);
+    q.draw(_this3.ctx);
   });
 };
 
@@ -157,6 +229,12 @@ Questions.prototype.update = function () {
       var q = _step.value;
 
       q.update();
+
+      if (q.y > this.state.game.height - 90) {
+        var index = this.questions.indexOf(q);
+        this.questions.splice(index, 1);
+        this.state.lifes.loseLife();
+      }
     }
   } catch (err) {
     _didIteratorError = true;
@@ -174,40 +252,37 @@ Questions.prototype.update = function () {
   }
 };
 
-// Returns a random integer between min (included) and max (excluded)
-// Using Math.round() will give you a non-uniform distribution!
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
 function EndState(game, points) {
-  this.game = game;
-
-  this.scoreText = "Your score: " + points;
-  this.context = game.context;
-
-  this.context.font = game.height / 20 + "px serif";
-  this.context.strokeStyle = "#ddd";
-  this.context.lineWidth = game.height / 400;
-
-  this.backButton = new Button(game.width / 5, game.height / 1.25, game.width - game.width / 2.5, game.height / 10, "BACK", function () {
-    game.state = new MenuState(game);
-  });
-};
-
-EndState.prototype.draw = function () {
-  this.context.fillStyle = "#fff";
-  this.context.fillText(this.scoreText, this.game.width / 2.0 - this.context.measureText(this.scoreText).width / 2.0, this.game.height / 2);
-  this.backButton.draw(this.context);
-};
-
-EndState.prototype.update = function () {};
-
-function GameState(game) {
   this.game = game;
   this.ctx = game.ctx;
 
-  this.lifes = new Lifes(3);
+  this.bg = Resources.getImage('game-bg');
+
+  this.scoreText = new Text("YOUR SCORE: " + points, this.game.width / 2, this.game.height * .2, '#000', 0.5, 0.5);
+
+  this.backButton = new Button(game.width / 2, game.height * .8, "BACK", "menu-btn", function () {
+    game.state = new MenuState(game);
+  }, "#0a7bff", .5, .5);
+};
+
+EndState.prototype.draw = function () {
+  this.ctx.drawImage(this.bg, 0, 0);
+  this.scoreText.draw(this.ctx);
+  this.backButton.draw(this.ctx);
+};
+
+EndState.prototype.update = function () {
+  this.backButton.update();
+};
+
+function GameState(game, difficulty) {
+  this.game = game;
+  this.ctx = game.ctx;
+
+  this.difficulty = difficulty;
+  this.bg = Resources.getImage('game-bg');
+
+  this.lifes = new Lifes(3, this.ctx);
   this.score = new Score();
 
   this.keyboard = new Keyboard(this);
@@ -216,146 +291,110 @@ function GameState(game) {
 };
 
 GameState.prototype.draw = function () {
-  this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+  this.ctx.drawImage(this.bg, 0, 0);
 
   this.questions.draw(this.ctx);
   this.lifes.draw(this.ctx);
   this.score.draw(this.ctx);
-  this.keyboard.draw(this.ctx);
   this.numberField.draw(this.ctx);
+  this.keyboard.draw(this.ctx);
 };
 
 GameState.prototype.update = function () {
   this.questions.update();
+  this.keyboard.update();
+
+  if (this.lifes.lifes < 1) {
+    this.game.state = new EndState(this.game, this.score.points);
+  }
 };
 
 function MenuState(game) {
+  var _this4 = this;
+
   this.game = game;
   this.ctx = game.ctx;
 
-  this.startButton = new Button(game.width / 2, game.height * .2, 150, 60, "NORMAL", function () {
-    game.state = new GameState(game);
-  }, .5, .5);
+  this.bg = Resources.getImage('menu-bg');
+
+  this.startButtonEasy = new Button(game.width / 2, game.height * .4, "EASY", 'menu-btn', function () {
+    console.log('ahoj');
+    game.state = new GameState(game, 0);
+  }, "#0a7bff", .5, .5);
+  this.startButtonNormal = new Button(game.width / 2, game.height * .5, "NORMAL", 'menu-btn', function () {
+    game.state = new GameState(game, 1);
+  }, "#0a7bff", .5, .5);
+
+  this.soundButton = new Button(game.width / 2, game.height * .8, "", 'sound', function () {
+    console.log('sup');
+    _this4.toggleSound();
+  }, "#fff", .5, .5);
 };
 
 MenuState.prototype.draw = function () {
-  this.startButton.draw(this.ctx);
+  this.ctx.drawImage(this.bg, 0, 0);
+  this.startButtonEasy.draw(this.ctx);
+  this.startButtonNormal.draw(this.ctx);
+  this.soundButton.draw(this.ctx);
 };
 
-MenuState.prototype.update = function () {};
+MenuState.prototype.update = function () {
+  this.startButtonEasy.update();
+  this.startButtonNormal.update();
+  this.soundButton.update();
+};
 
-function Button(x, y, width, height, text, onclick) {
-  var _this3 = this;
+MenuState.prototype.toggleSound = function () {
+  console.log('ahoj');
+  this.soundButton.image = Resources.getImage('sound-off');
+};
 
+function Button(x, y, text, image, onclick, fontColor) {
   var anchorX = arguments.length <= 6 || arguments[6] === undefined ? 0 : arguments[6];
   var anchorY = arguments.length <= 7 || arguments[7] === undefined ? 0 : arguments[7];
 
   this.x = x;
   this.y = y;
-  this.width = width;
-  this.height = height;
-  this.text = new Text(text, x + width / 2 - width * anchorX, y + height / 2 - height * anchorY, "#fff", "16px sans-serif", 0.5, 0.5);
+  this.image = Resources.getImage(image);
+  this.text = new Text(text, x + this.image.width / 2 - this.image.width * anchorX, y + this.image.height / 2 - this.image.height * anchorY, fontColor, 0.5, 0.5);
 
   this.anchor = {
     x: anchorX,
     y: anchorY
   };
 
-  this.active = false;
   this.value = 0;
   this.onclick = onclick;
-  this.keyCode;
-  this.altKeyCode;
-
-  window.addEventListener("mousedown", function () {
-    _this3.onMouseDown(event);
-  }, false);
-
-  window.addEventListener("mouseup", function () {
-    _this3.onMouseUp(event);
-  }, false);
-
-  window.addEventListener("keydown", function () {
-    if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8') {
-      event.preventDefault();
-    }
-    _this3.onKeyDown(event);
-  }, false);
-
-  window.addEventListener("keyup", function () {
-    _this3.onKeyUp(event);
-    if (event.keyIdentifier === 'U+0008' || event.keyIdentifier === 'Backspace' || event.keyCode === '8') {
-      event.preventDefault();
-    }
-  }, false);
 }
 
 Button.prototype.draw = function (ctx) {
-  ctx.strokeStyle = "#fff";
-  ctx.strokeRect(this.x - this.width * this.anchor.x, this.y - this.height * this.anchor.y, this.width, this.height);
-
-  if (this.active) {
-    var off = ctx.lineWidth;
-    ctx.fillStyle = "#333";
-    ctx.fillRect(this.x - this.width * this.anchor.x + off / 2, this.y - this.height * this.anchor.y + off / 2, this.width - off, this.height - off);
-  }
+  ctx.drawImage(this.image, this.x - this.image.width * this.anchor.x, this.y - this.image.height * this.anchor.y);
   this.text.draw(ctx);
 };
 
-Button.prototype.onMouseDown = function (event) {
-  var canvas = document.getElementById("game");
-  var x = event.pageX - canvas.offsetLeft;
-  var y = event.pageY - canvas.offsetTop;
-  if (this.contains(x, y)) {
-    this.active = true;
-  }
-};
-Button.prototype.onMouseUp = function (event) {
-  this.active = false;
-  var canvas = document.getElementById("game");
-  var x = event.pageX - canvas.offsetLeft;
-  var y = event.pageY - canvas.offsetTop;
-  if (this.contains(x, y)) {
+Button.prototype.update = function () {
+  if (Input.isMouseDown(this)) {
     this.onclick();
   }
 };
-Button.prototype.onKeyDown = function (event) {
-  if (event.keyCode === this.keyCode || event.keyCode === this.altKeyCode) {
-    this.active = true;
-  }
-};
-Button.prototype.onKeyUp = function (event) {
-  if (event.keyCode === this.keyCode || event.keyCode === this.altKeyCode) {
-    this.active = false;
-    this.onclick();
-  }
-};
+
 Button.prototype.contains = function (x, y) {
-  return x >= this.x - this.width * this.anchor.x && x <= this.x + this.width - this.width * this.anchor.x && y >= this.y - this.height * this.anchor.y && y <= this.y + this.height - this.height * this.anchor.y;
+  return x >= this.x - this.image.width * this.anchor.x && x <= this.x + this.image.width - this.image.width * this.anchor.x && y >= this.y - this.image.height * this.anchor.y && y <= this.y + this.image.height - this.image.height * this.anchor.y;
 };
 
 function Keyboard(state) {
-  var _this4 = this;
+  var _this5 = this;
 
   this.state = state;
   this.ctx = state.ctx;
   this.btns = [];
 
   var _loop = function _loop(i) {
-    var btn = new Button(i * _this4.ctx.canvas.width / 11, _this4.ctx.canvas.height - 50, _this4.ctx.canvas.width / 11, 50, i + "", function () {
-      _this4.state.numberField.numberPressed(i);
-    });
 
-    btn.keyCode = i + 96;
-    btn.altKeyCode = i + 48;
-
-    if (i == 10) {
-      btn.text.text = "del";
-      btn.keyCode = 8;
-      btn.altKeyCode = null;
-    }
-
-    _this4.btns.push(btn);
+    var btn = new Button(i === 10 ? _this5.ctx.canvas.width * 0.7 : i * _this5.ctx.canvas.width / 10, i === 10 ? _this5.ctx.canvas.height - 45 : _this5.ctx.canvas.height, i === 10 ? "DELETE" : i + "", i === 10 ? 'keyboard-btn-del' : 'keyboard-btn', function () {
+      _this5.state.numberField.numberPressed(i);
+    }, '#0a7bff', 0, 1);
+    _this5.btns.push(btn);
   };
 
   for (var i = 0; i < 11; i++) {
@@ -363,39 +402,51 @@ function Keyboard(state) {
   }
 }
 
+Keyboard.prototype.update = function (context) {
+  this.btns.forEach(function (b) {
+    b.update();
+  });
+};
 Keyboard.prototype.draw = function (context) {
-  var _this5 = this;
+  var _this6 = this;
 
   this.btns.forEach(function (b) {
-    b.draw(_this5.ctx);
+    b.draw(_this6.ctx);
   });
 };
 
-function Lifes(lifes) {
-  this.x = 0;
-  this.y = 0;
+function Lifes(lifes, ctx) {
   this.lifes = lifes;
+  this.text = new Text("LIFES: " + this.lifes, ctx.canvas.width - 30, 0, "#000", 1, 1);
+  this.img = Resources.getImage('lifes');
 }
 
 Lifes.prototype.draw = function (ctx) {
-  ctx.font = ctx.canvas.height / 30 + "px calibri";
-  ctx.fillStyle = "#fff";
-  ctx.fillText("Lifes: " + this.lifes, ctx.canvas.width - ctx.measureText("Lifes:  " + this.lifes).width, ctx.canvas.height / 50);
+  this.text.draw(ctx);
+  ctx.drawImage(this.img, ctx.canvas.width - this.img.width - 5, 1);
+};
+
+Lifes.prototype.loseLife = function () {
+  this.lifes -= 1;
+  this.text.setText("LIFES: " + this.lifes);
 };
 
 function NumberField(state) {
   this.state = state;
   this.ctx = state.ctx;
 
+  this.img = Resources.getImage('numberfield');
+
   this.x = 0;
-  this.y = this.ctx.canvas.height - 100;
-  this.width = this.ctx.canvas.width;
-  this.height = 50;
-  this.text = new Text('0', this.width / 2, this.y + this.height / 2, "#fff", "16px sans-serif", 0.5, 0.5);
+  this.y = this.ctx.canvas.height - 90;
+  this.width = this.ctx.canvas.width * 0.7;
+  this.height = 45;
+  this.text = new Text('0', this.width / 2, this.y + this.height / 2, "#000", 0.5, 0.5);
 }
 
 NumberField.prototype.draw = function (ctx) {
   ctx.strokeRect(this.x, this.y, this.width, this.height);
+  ctx.drawImage(this.img, 0, this.y);
   this.text.draw(ctx);
 };
 
@@ -449,31 +500,27 @@ NumberField.prototype.checkAnswers = function () {
 };
 
 function Score() {
-  this.x = 0;
-  this.y = 0;
   this.points = 0;
+  this.text = new Text('SCORE: ' + this.points, 0, 0, "#000", 0, 1);
 }
 
 Score.prototype.increaseScore = function () {
-  this.points += 30;
+  this.points += 10;
+  this.text.setText('SCORE: ' + this.points);
 };
 
 Score.prototype.draw = function (ctx) {
-  ctx.font = ctx.canvas.height / 30 + "px calibri";
-  ctx.fillText("Score: " + this.points, ctx.canvas.width / 100, ctx.canvas.height / 50);
+  this.text.draw(ctx);
 };
 
-function Text(text, x, y) {
-  var color = arguments.length <= 3 || arguments[3] === undefined ? "#fff" : arguments[3];
-  var font = arguments.length <= 4 || arguments[4] === undefined ? "16px sans-serif" : arguments[4];
-  var anchorX = arguments.length <= 5 || arguments[5] === undefined ? 0 : arguments[5];
-  var anchorY = arguments.length <= 6 || arguments[6] === undefined ? 0 : arguments[6];
+function Text(text, x, y, color) {
+  var anchorX = arguments.length <= 4 || arguments[4] === undefined ? 0 : arguments[4];
+  var anchorY = arguments.length <= 5 || arguments[5] === undefined ? 0 : arguments[5];
 
   this.text = text;
   this.x = x;
   this.y = y;
   this.color = color;
-  this.font = font;
   this.anchor = {
     x: anchorX,
     y: anchorY
@@ -481,9 +528,8 @@ function Text(text, x, y) {
 }
 
 Text.prototype.draw = function (ctx) {
-  ctx.font = this.font;
   ctx.fillStyle = this.color;
-  ctx.fillText(this.text, this.x - ctx.measureText(this.text).width * this.anchor.x, this.y + parseInt(this.font) * this.anchor.y);
+  ctx.fillText(this.text, this.x - ctx.measureText(this.text).width * this.anchor.x, this.y + 20 * this.anchor.y);
 };
 
 Text.prototype.setText = function (text) {

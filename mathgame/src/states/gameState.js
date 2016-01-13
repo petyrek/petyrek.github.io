@@ -1,8 +1,11 @@
-function GameState(game) {
+function GameState(game, difficulty) {
   this.game = game;
   this.ctx = game.ctx;
 
-  this.lifes = new Lifes(3);
+  this.difficulty = difficulty;
+  this.bg = Resources.getImage('game-bg');
+
+  this.lifes = new Lifes(3, this.ctx);
   this.score = new Score();
 
   this.keyboard = new Keyboard(this);
@@ -11,15 +14,20 @@ function GameState(game) {
 };
 
 GameState.prototype.draw = function() {
-  this.ctx.clearRect(0, 0, this.game.width, this.game.height);
+  this.ctx.drawImage(this.bg, 0, 0);
 
   this.questions.draw(this.ctx);
   this.lifes.draw(this.ctx);
   this.score.draw(this.ctx);
-  this.keyboard.draw(this.ctx);
   this.numberField.draw(this.ctx);
+  this.keyboard.draw(this.ctx);
 };
 
 GameState.prototype.update = function() {
   this.questions.update();
+  this.keyboard.update();
+
+  if (this.lifes.lifes < 1){
+    this.game.state = new EndState(this.game, this.score.points);
+  }
 };

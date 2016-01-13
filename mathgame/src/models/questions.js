@@ -7,7 +7,7 @@ function Questions(state) {
 }
 
 Questions.prototype.generateQuestions = function() {
-  this.questions.push(new Question(this.ctx));
+  this.questions.push(new Question(this.state));
 
   (function(that) {
     var time = 3000,
@@ -36,5 +36,11 @@ Questions.prototype.draw = function() {
 Questions.prototype.update = function() {
   for(let q of this.questions){
     q.update();
+
+    if(q.y > this.state.game.height - 90){
+      let index = this.questions.indexOf(q);
+      this.questions.splice(index, 1);
+      this.state.lifes.loseLife();
+    }
   }
 }

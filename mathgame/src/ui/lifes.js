@@ -1,11 +1,15 @@
-function Lifes(lifes) {
-  this.x = 0;
-  this.y = 0;
+function Lifes(lifes, ctx) {
   this.lifes = lifes;
+  this.text = new Text("LIFES: " + this.lifes, ctx.canvas.width - 30, 0, "#000", 1, 1);
+  this.img = Resources.getImage('lifes');
 }
 
 Lifes.prototype.draw = function(ctx) {
-  ctx.font = ctx.canvas.height / 30 + "px calibri";
-  ctx.fillStyle = "#fff";
-  ctx.fillText("Lifes: " + this.lifes, ctx.canvas.width - ctx.measureText("Lifes:  " + this.lifes).width, ctx.canvas.height / 50);
+  this.text.draw(ctx);
+  ctx.drawImage(this.img, ctx.canvas.width - this.img.width - 5, 1);
+}
+
+Lifes.prototype.loseLife = function(){
+  this.lifes -= 1;
+  this.text.setText("LIFES: " + this.lifes);
 }

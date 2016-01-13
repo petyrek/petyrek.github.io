@@ -2,15 +2,18 @@ function NumberField(state) {
   this.state = state;
   this.ctx = state.ctx;
 
+  this.img = Resources.getImage('numberfield');
+
   this.x = 0;
-  this.y = this.ctx.canvas.height - 100;
-  this.width = this.ctx.canvas.width;
-  this.height = 50;
-  this.text = new Text('0', this.width / 2, this.y + this.height / 2, "#fff", "16px sans-serif", 0.5, 0.5);
+  this.y = this.ctx.canvas.height - 90;
+  this.width = this.ctx.canvas.width * 0.7;
+  this.height = 45;
+  this.text = new Text('0', this.width / 2, this.y + this.height / 2, "#000", 0.5, 0.5);
 }
 
 NumberField.prototype.draw = function(ctx) {
   ctx.strokeRect(this.x, this.y, this.width, this.height);
+  ctx.drawImage(this.img, 0, this.y);
   this.text.draw(ctx);
 }
 
@@ -25,7 +28,7 @@ NumberField.prototype.numberPressed = function(i) {
     this.text.setText(this.text.getText() + i); // number is pressed
   }
   this.checkAnswers();
-}
+} 
 
 NumberField.prototype.checkAnswers = function() {
   let value = parseInt(this.text.getText());

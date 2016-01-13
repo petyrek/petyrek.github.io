@@ -1,7 +1,8 @@
-function Question(ctx) {
-  this.image = document.getElementById("bubble");
+function Question(state) {
+  this.state = state;
+  this.image = Resources.getImage('bubble');
 
-  this.x = getRandomInt(0, ctx.canvas.width - this.image.width);
+  this.x = getRandomInt(0, state.game.width - this.image.width);
   this.y = 0 - this.image.height
   this.velocity = 2;
   this.generateQuestionText();
@@ -12,9 +13,11 @@ Question.prototype.update = function() {
 };
 
 Question.prototype.draw = function(ctx) {
-  ctx.drawImage(this.image, this.x - this.image.width / 2, this.y - this.image.height / 2);
-  ctx.fillStyle = "#000";
-  ctx.fillText(this.text, this.x - ctx.measureText(this.text).width / 2.0, this.y);
+  ctx.drawImage(this.image, this.x, this.y);
+  ctx.fillStyle = "#fff";
+  ctx.font = "30px sans-serif";
+  ctx.fillText(this.text, this.x + this.image.width / 2 - ctx.measureText(this.text).width / 2.0, this.y + this.image.height / 2 + 22 / 2);
+  ctx.font = "30px messy_fika";
 };
 
 Question.prototype.generateQuestionText = function() {
@@ -24,7 +27,7 @@ Question.prototype.generateQuestionText = function() {
     let first = getRandomInt(1, 50);
     let second = getRandomInt(1, 50);
 
-    this.text = first + "+" + second;
+    this.text = first + " + " + second;
     this.value = first + second;
     return;
   }
@@ -36,7 +39,7 @@ Question.prototype.generateQuestionText = function() {
       second = [first, first = second][0];
     }
 
-    this.text = first + "-" + second;
+    this.text = first + " - " + second;
     this.value = first - second;
     return;
   }
@@ -44,7 +47,7 @@ Question.prototype.generateQuestionText = function() {
     let first = getRandomInt(1, 10);
     let second = getRandomInt(1, 10);
 
-    this.text = first + "*" + second;
+    this.text = first + " × " + second;
     this.value = first * second;
     return;
   }
@@ -52,7 +55,7 @@ Question.prototype.generateQuestionText = function() {
     let first = getRandomInt(1, 10);
     let second = getRandomInt(1, 10);
 
-    this.text = (first * second) + "/" + second;
+    this.text = (first * second) + " ÷ " + second;
     this.value = first;
     return;
   }
