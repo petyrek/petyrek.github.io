@@ -15,8 +15,8 @@ function Input() {
   }
   document.body.onmousedown = (e) => {
     this.mouseDown = true;
-    this.touchX = e.x;
-    this.touchY = e.y;
+    this.touchX = e.pageX;
+    this.touchY = e.pageY;
   }
   document.body.onmouseup = () => {
     this.mouseDown = false;

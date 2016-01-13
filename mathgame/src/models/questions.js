@@ -35,13 +35,12 @@ Questions.prototype.draw = function() {
 
 
 Questions.prototype.update = function() {
-  for(let q of this.questions){
+  this.questions.forEach((q) => {
     q.update();
-
     if(q.y > this.state.game.height - 90){
       let index = this.questions.indexOf(q);
       this.questions.splice(index, 1);
       this.state.lifes.loseLife();
     }
-  }
+  });
 }
