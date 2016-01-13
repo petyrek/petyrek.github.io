@@ -83,8 +83,10 @@ function Input() {
 Input.prototype.isMouseDown = function (button) {
   if (!this.mouseEventFired && this.mouseDown) {
     var canvas = document.getElementById("game");
-    var x = (this.touchX - canvas.offsetLeft) * canvas.width / window.innerWidth;
-    var y = (this.touchY - canvas.offsetTop) * canvas.height / window.innerHeight;
+    var rect = canvas.getBoundingClientRect();
+
+    var x = (this.touchX - rect.left) * (window.innerWidth < canvas.width ? canvas.width / window.innerWidth : 1);
+    var y = (this.touchY - rect.top) * (window.innerHeight < canvas.height ? canvas.height / window.innerHeight : 1);
 
     if (button.contains(x, y)) {
       this.mouseEventFired = true;
@@ -114,7 +116,7 @@ function Resources() {
   this.loadImage('lifes', 'assets/lifes.png');
   this.loadImage('sound', 'assets/sound.png');
   this.loadImage('sound-off', 'assets/sound-off.png');
-  this.loadSound('cheer', 'assets/cheer.mp3');
+  this.loadSound('check', 'assets/check.m4a');
 }
 
 Resources.prototype.loadImage = function (key, src) {
@@ -576,7 +578,7 @@ NumberField.prototype.checkAnswers = function () {
       _this8.state.score.increaseScore();
       var index = _this8.state.questions.questions.indexOf(q);
       _this8.state.questions.questions.splice(index, 1);
-      Resources.playSound('cheer');
+      Resources.playSound('check');
       return;
     }
   });

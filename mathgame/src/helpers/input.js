@@ -27,8 +27,10 @@ function Input() {
 Input.prototype.isMouseDown = function(button){
   if (!this.mouseEventFired && this.mouseDown){
     let canvas = document.getElementById("game");
-    let x = (this.touchX - canvas.offsetLeft) * canvas.width / window.innerWidth;
-    let y = (this.touchY - canvas.offsetTop) * canvas.height / window.innerHeight;
+    let rect = canvas.getBoundingClientRect();
+
+    let x = (this.touchX - rect.left) * ((window.innerWidth < canvas.width)? canvas.width / window.innerWidth : 1);
+    let y = (this.touchY - rect.top) * ((window.innerHeight < canvas.height)? canvas.height / window.innerHeight : 1)
 
     if(button.contains(x, y)){
       this.mouseEventFired = true;

@@ -35,7 +35,7 @@ NumberField.prototype.checkAnswers = function() {
       this.state.score.increaseScore();
       let index = this.state.questions.questions.indexOf(q);
       this.state.questions.questions.splice(index, 1);
-      Resources.playSound('cheer');
+      Resources.playSound('check');
       return;
     }
   });
