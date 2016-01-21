@@ -21,22 +21,29 @@ gulp.task('open', function() {
 });
 
 gulp.task('less', function () {
-  return gulp.src('./less/**/*.less')
+  gulp.src('./web/less/dashboard.less')
   .pipe(less())
   .pipe(prefix())
   .pipe(cssshrink())
-  .pipe(gulp.dest('./'))
+  .pipe(gulp.dest('./web/dist/'))
+  .pipe(connect.reload());
+
+  return gulp.src('./web/less/style.less')
+  .pipe(less())
+  .pipe(prefix())
+  .pipe(cssshrink())
+  .pipe(gulp.dest('./web/dist/'))
   .pipe(connect.reload());
 });
 
 gulp.task('uglify', function() {
-  return gulp.src('./js/**/*.js')
+  return gulp.src('./web/js/**/*.js')
   .pipe(uglify())
-  .pipe(gulp.dest('./'))
+  .pipe(gulp.dest('./web/dist/'))
   .pipe(connect.reload());
 });
 
 gulp.task('watch', function () {
-  gulp.watch('./less/**/*', ['less']);
-  gulp.watch('./js/**/*', ['uglify']);
+  gulp.watch('./web/less/**/*', ['less']);
+  gulp.watch('./web/js/**/*', ['uglify']);
 });
