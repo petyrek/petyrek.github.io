@@ -7,8 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="style.css">
-  <script src="lib/phaser.min.js"></script>
-  <script src="game.js"></script>
+
 </head>
 
 <body>
@@ -21,6 +20,10 @@
     <div id="speaker"></div>
     <div id="home"></div>
   </div>
-
+  <script src="lib/phaser.min.js"></script>
+  <script src="game.js"></script>
+  <script>
+    game.state.start('Boot');
+  </script>
 </body>
 </html>
