@@ -572,7 +572,7 @@ module.exports = {
   create: function() {
     return this.game.add.tween(this.logo).to({
       alpha: 1
-    }, 1, "Linear", true).onComplete.add(function() {
+    }, 1000, "Linear", true).onComplete.add(function() {
       return this.game.state.start('Game');
     }, this);
   }
