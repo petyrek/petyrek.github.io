@@ -1,1 +1,1 @@
-window.onload=function(){Array.prototype.forEach.call(document.querySelectorAll("[data-target]"),function(t){t.onclick=function(){Array.prototype.forEach.call(document.querySelectorAll("[data-target]"),function(t){t.className=t.className.replace(/\bactive\b/,"")}),this.className+=" active",Array.prototype.forEach.call(document.querySelectorAll("[data-tab]"),function(t){t.style.display="none"}),document.querySelector('[data-tab="'+this.getAttribute("data-target")+'"]').style.display="block"}})};
+window.onload=function(){};
