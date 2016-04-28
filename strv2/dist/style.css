@@ -1,0 +1,98 @@
+html, body{
+	margin: 0;
+	font-family: sans-serif;
+}
+*{
+	box-sizing: border-box;
+}
+nav{
+	border-bottom: 1px solid #333;
+	text-align: center;
+	background: #333;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+nav a{
+	color: #e5e5e5;
+	padding: 10px 20px;
+	display: inline-block;
+	background: #222;
+	text-decoration: none;
+	transition: all .25s ease;
+}
+nav a:hover{
+	color: #ee3333;
+}
+main{
+	max-width: 960px;
+	margin: 50px auto 0;
+}
+
+input[type="text"]{
+    border-radius: 0;
+    border: 1px solid #333;
+    font-size: 20px;
+    height: 35px;
+    width: 50%;
+    padding: 5px;
+}
+button[type="submit"]{
+	border-radius: 0;
+    border: 1px solid #333;
+    background: #33ee33;
+    color: #333;
+    font-size: 20px;
+    line-height: 33px;
+    padding: 0 20px;
+    transition: all .25s ease;
+}
+
+button[type="submit"]:hover{
+	background: #22dd22;
+}
+a:hover{
+	text-decoration: none;
+}
+ul{
+	list-style: none;
+	padding: 0;
+}
+ul li{
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+.todo{
+	font-size: 20px;
+    line-height: 25px;
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    cursor: pointer;
+}
+.todo .done{
+	display: inline-block;
+	width: 20px;
+	text-align: center;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+.todo .done.true{
+	color: #33ee33;
+}
+.todo .done.false{
+	color: #ee3333;	
+}
+.todo .text{
+	margin-right: 10px;
+	vertical-align: middle;
+}
+.todo button{
+    background: #ee3333;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 0;
+    font-size: 15px;
+    padding: 3px 10px;
+    float: right;
+}
